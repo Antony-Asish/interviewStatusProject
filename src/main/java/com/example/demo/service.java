@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Response.CandidateCount;
@@ -37,16 +38,17 @@ public class service {
 	private EmployeeCandidateRepository employeeCandidateRepo;
 	
 	public String Name;
+	int rand;
 	
 	Random random=new Random();
-	
 	
 //     EMPLOYEES LOGIN VALIDATION
 		public ResponseEntity<ResponseModel> employeeLogin(EmployeeDetail ob) {
 			EmployeeDetail ob1=employeeRepo.findByUserName(ob.getUserName());
+			BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 			if(ob1 == null)
 				return new ResponseEntity<>(new ResponseModel("Email Incorrect"),HttpStatus.UNAUTHORIZED);
-				if(ob1.getPassword().equals(ob.getPassword()))
+			    if(passwordEncoder.matches(ob.getPassword(),ob1.getPassword()))
 				{
 				   ReturnData data=new ReturnData(ob1.getId(),ob1.getUserName(),ob1.getEmail(),ob1.getFirstName(),ob1.getPhone());
 				   return new ResponseEntity<>(new ResponseModel(ob1.getRoll(),data),HttpStatus.OK);
@@ -148,17 +150,24 @@ return result;
 
 //      EMPLOYEE ADDING AND UPDATING
 public ResponseEntity<ResponseAddEmployee> addemployee(EmployeeDetail ob) {
-	if(ob.getId() != null)
-	{
+if(ob.getId() != null)
+  {
+	if(ob.getPassword().equals(ob.getCpassword()))
+		{
 		if(employeeRepo.existsByEmailAndIdIsNot(ob.getEmail(),ob.getId()))
 			return new ResponseEntity<>(new ResponseAddEmployee("Email Already exists!"),HttpStatus.BAD_REQUEST);
 		if(employeeRepo.existsByPhoneAndIdIsNot(ob.getPhone(),ob.getId()))
 			return new ResponseEntity<>(new ResponseAddEmployee("Phone Number Already exists!"),HttpStatus.BAD_REQUEST);
+		BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+		String password=passwordEncoder.encode(ob.getPassword());
+		ob.setPassword(password);
+		ob.setCpassword("");
 		return new ResponseEntity<>(new ResponseAddEmployee("Employee Detail Update Successfully",employeeRepo.save(ob)),HttpStatus.OK);
+		}
+		return new ResponseEntity<>(new ResponseAddEmployee("Password And ConfirmPassword not same"),HttpStatus.BAD_REQUEST);
 	}
 	else
 	{
-	int rand;
 	if(employeeRepo.existsByEmail(ob.getEmail()))
 		return new ResponseEntity<>(new ResponseAddEmployee("Email Already exists!"),HttpStatus.BAD_REQUEST);
 	if(employeeRepo.existsByPhone(ob.getPhone()))
@@ -167,9 +176,11 @@ public ResponseEntity<ResponseAddEmployee> addemployee(EmployeeDetail ob) {
 	{
     rand = random.nextInt(10000);
 	ob.setUserName(ob.getFirstName()+rand+"@icanio");
-	ob.setPassword(ob.getFirstName()+rand+"@icanio");
 	}while(employeeRepo.existsByUserName(ob.getUserName()));
 	}
+	BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+	String password = passwordEncoder.encode(ob.getFirstName()+rand+"@icanio");
+	ob.setPassword(password);
 	return new ResponseEntity<>(new ResponseAddEmployee("New Employee's UserId is "+ob.getUserName(),employeeRepo.insert(ob)),HttpStatus.OK);
 }
 
@@ -183,7 +194,7 @@ public ResponseEntity<ResponseModel> deleteEmployee(String id) {
 if(employeeRepo.existsById(id))
 {
 employeeRepo.deleteById(id);
-return new ResponseEntity<>(new ResponseModel("Employee Detail Deleted"),HttpStatus.OK);
+return new ResponseEntity<>(new ResponseModel("Employee Detail Deleted Successfully"),HttpStatus.OK);
 }
 else
 	return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
@@ -213,7 +224,18 @@ public ArrayList<ListOfCandidate> employeeView(String id) {
     //    TRAINING PURPOSE
 
 //      GIVE CANDIDATE LIST
-public List<CandidateDetail> getalldetail() {
+public List<CandidateDetail> getalldetail(String pass) {
+	System.out.println(pass);
+	BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+	
+	String encodedpass=encoder.encode(pass);
+	System.out.println(encodedpass);
+	boolean check=encoder.matches(pass, encodedpass);
+	if(check)
+		
+		System.out.println("password is right");
+	else
+		System.out.println("password i wrong");
 return candidateRepo.findAll();
 }
 
@@ -247,5 +269,9 @@ public String updatePassword(EmployeeDetail ob) {
 		else return "OTP is wrong";
 	}
 	return "confirm Password is wrong";
+}
+
+public EmployeeDetail checkPath(String id) {
+	return employeeRepo.findById(id).get();
 }
 }

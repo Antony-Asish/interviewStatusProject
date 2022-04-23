@@ -20,6 +20,8 @@ public class EmployeeDetail {
 	private String password;
 	private String cpassword;
 	private Date dob;
+	private String gender;
+	private String linkedIn;
 	private String roll;
 	private ArrayList<Education_Detail> degree;
 	private Company[] company;
@@ -126,5 +128,17 @@ public class EmployeeDetail {
 	}
 	public void setPhone(Long phone) {
 		this.phone = phone;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public String getLinkedIn() {
+		return linkedIn;
+	}
+	public void setLinkedIn(String linkedIn) {
+		this.linkedIn = linkedIn;
 	}
 }

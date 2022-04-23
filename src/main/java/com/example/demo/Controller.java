@@ -1,7 +1,6 @@
 package com.example.demo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -77,8 +77,8 @@ return service.addcandidate(ob);
 }
 
 //     VIEW CANDIDATE FULL DETAIL
-@GetMapping("candidateDetail")
-public CandidateDetail viewCandidateDetail(@RequestParam("id") String id)
+@GetMapping("candidate/{id}")
+public CandidateDetail viewCandidateDetail(@PathVariable("id") String id)
 {
 return service.viewCandidateDetail(id);
 }
@@ -105,8 +105,8 @@ return service.employeeList(page);
 }
 
 //    VIEW EMPLOYEE FULL DETAIL
-@GetMapping("employeeDetail")
-public EmployeeDetail viewEmployeeDetail(@RequestParam("id") String id)
+@GetMapping("employee/{id}")
+public EmployeeDetail viewEmployeeDetail(@PathVariable("id") String id)
 {
 return service.viewEmployeeDetail(id);
 }
@@ -135,11 +135,7 @@ public ArrayList<ListOfCandidate> employeeView(@RequestParam("id") String id)
 //   TRAINING PURPOSE
 
 //   GET ALL CANDIDATE DETAIL
-@GetMapping("candidateList")
-public List<CandidateDetail> getall()
-{
-return service.getalldetail();
-}
+
 
 //EMAIL VALIDATION
 @PutMapping("emailCheck")

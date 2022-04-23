@@ -20,6 +20,8 @@ public class CandidateDetail {
 	private String lastName;
 	private String email;
 	private Date dob;
+	private String gender;
+	private String linkedIn;
 	private ArrayList<Education_Detail> qualification;
 	private Company[] company;
 	private ArrayList<String> skill;
@@ -115,4 +117,17 @@ public class CandidateDetail {
 	public void setPhone(Long phone) {
 		this.phone = phone;
 	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public String getLinkedIn() {
+		return linkedIn;
+	}
+	public void setLinkedIn(String linkedIn) {
+		this.linkedIn = linkedIn;
+	}
+	
 }
