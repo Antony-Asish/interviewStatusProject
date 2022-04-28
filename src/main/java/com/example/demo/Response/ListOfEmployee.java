@@ -1,20 +1,22 @@
 package com.example.demo.Response;
 
+import java.util.ArrayList;
+
 public class ListOfEmployee {
 	private String id;
 	private String firstName;
 	private String email;
 	private String department;
-	private String roll;
+	private ArrayList<String> role;
 	
 	public ListOfEmployee(String id, String firstName, String email,
-			String department, String roll) {
+			String department,ArrayList<String> role) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
 		this.email = email;
 		this.department = department;
-		this.roll = roll;
+		this.role = role;
 	}
 	public String getId() {
 		return id;
@@ -37,13 +39,14 @@ public class ListOfEmployee {
 	public String getDepartment() {
 		return department;
 	}
+	public ArrayList<String> getRole() {
+		return role;
+	}
+	public void setRole(ArrayList<String> role) {
+		this.role = role;
+	}
 	public void setDepartment(String department) {
 		this.department = department;
 	}
-	public String getRoll() {
-		return roll;
-	}
-	public void setRoll(String roll) {
-		this.roll = roll;
-	}
+	
 }

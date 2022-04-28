@@ -22,13 +22,14 @@ public class EmployeeDetail {
 	private Date dob;
 	private String gender;
 	private String linkedIn;
-	private String roll;
+	private ArrayList<String> role;
 	private ArrayList<Education_Detail> degree;
 	private Company[] company;
 	private ArrayList<String> skill;
 	private String department;
 	private Long phone;
 	private address address;
+	private String position;
 	private int otp;
 	
 	public String getPassword() {
@@ -62,6 +63,12 @@ public class EmployeeDetail {
 		this.skill = skill;
 	}
 	
+	public String getPosition() {
+		return position;
+	}
+	public void setPosition(String position) {
+		this.position = position;
+	}
 	public Company[] getCompany() {
 		return company;
 	}
@@ -111,11 +118,12 @@ public class EmployeeDetail {
 	public void setDob(Date dob) {
 		this.dob = dob;
 	}
-	public String getRoll() {
-		return roll;
+	
+	public ArrayList<String> getRole() {
+		return role;
 	}
-	public void setRoll(String roll) {
-		this.roll = roll;
+	public void setRole(ArrayList<String> role) {
+		this.role = role;
 	}
 	public String getDepartment() {
 		return department;

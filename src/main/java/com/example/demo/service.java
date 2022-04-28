@@ -18,15 +18,18 @@ import com.example.demo.Response.ListOfCandidate;
 import com.example.demo.Response.ListOfEmployee;
 import com.example.demo.Response.ResponseAddCandidate;
 import com.example.demo.Response.ResponseAddEmployee;
+import com.example.demo.Response.ResponseAddPanel;
 import com.example.demo.Response.ResponseModel;
-import com.example.demo.dummyClass.DepartmentDetail;
+import com.example.demo.dummyClass.DropDownData;
 import com.example.demo.dummyClass.ReturnData;
 import com.example.demo.model.CandidateDetail;
 import com.example.demo.model.EmployeeCandidate;
 import com.example.demo.model.EmployeeDetail;
+import com.example.demo.model.PanelDetail;
 import com.example.demo.repository.CandidateRepository;
 import com.example.demo.repository.EmployeeCandidateRepository;
 import com.example.demo.repository.EmployeeRepository;
+import com.example.demo.repository.PanelRepository;
 
 @Service
 public class service {
@@ -36,6 +39,8 @@ public class service {
 	private CandidateRepository candidateRepo;
 	@Autowired
 	private EmployeeCandidateRepository employeeCandidateRepo;
+	@Autowired
+	private PanelRepository panelRepo;
 	
 	public String Name;
 	int rand;
@@ -48,12 +53,20 @@ public class service {
 			BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 			if(ob1 == null)
 				return new ResponseEntity<>(new ResponseModel("Email Incorrect"),HttpStatus.UNAUTHORIZED);
-			    if(passwordEncoder.matches(ob.getPassword(),ob1.getPassword()))
-				{
-				   ReturnData data=new ReturnData(ob1.getId(),ob1.getUserName(),ob1.getEmail(),ob1.getFirstName(),ob1.getPhone());
-				   return new ResponseEntity<>(new ResponseModel(ob1.getRoll(),data),HttpStatus.OK);
-				}
-				else
+			boolean check=true;
+			for(String role : ob1.getRole())
+			{
+			   if(role.equals(ob.getPosition()))
+				 check=false;
+			}
+			if(check)
+				return new ResponseEntity<>(new ResponseModel("You are not "+ob.getPosition()),HttpStatus.UNAUTHORIZED);
+			if(passwordEncoder.matches(ob.getPassword(),ob1.getPassword()))
+			{
+				ReturnData data=new ReturnData(ob1.getId(),ob1.getUserName(),ob1.getEmail(),ob1.getFirstName(),ob1.getPhone());
+				return new ResponseEntity<>(new ResponseModel(ob.getPosition(),data),HttpStatus.OK);
+		    }
+			else
 			return new ResponseEntity<>(new ResponseModel("PassWord Incorrect"),HttpStatus.UNAUTHORIZED);
 		}
 
@@ -94,28 +107,22 @@ public class service {
 			return result;
 		}
 		
-//      JOB DETAIL FOR DROP DOWN
-public DepartmentDetail jobDetail() {
-String[] job={"React Js","Api","React Native","DevOps"};
-return new DepartmentDetail(job);
-}
-		
 //      CANDIDATE ADDING AND CANDIDATE UPDATE
-	public ResponseEntity<ResponseAddCandidate> addcandidate(CandidateDetail ob)
+ 	public ResponseEntity<ResponseAddCandidate> addcandidate(CandidateDetail ob)
 	{
 		if(ob.getId() != null)
 		{
 			if(candidateRepo.existsByEmailAndIdIsNot(ob.getEmail(),ob.getId()))
 				 return new ResponseEntity<>(new ResponseAddCandidate("Email Already Exist!"),HttpStatus.BAD_REQUEST);
 			if(candidateRepo.existsByPhoneAndIdIsNot(ob.getPhone(),ob.getId()))
-			return new ResponseEntity<>(new ResponseAddCandidate("Phone number Already Exist!"),HttpStatus.BAD_REQUEST);
+			    return new ResponseEntity<>(new ResponseAddCandidate("Phone number Already Exist!"),HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<>(new ResponseAddCandidate("candidateDetail Updated",candidateRepo.save(ob)),HttpStatus.OK);	
 		}  
 		else {
 			if(candidateRepo.existsByEmail(ob.getEmail()))
 				 return new ResponseEntity<>(new ResponseAddCandidate("Email Already Exist!"),HttpStatus.BAD_REQUEST);
 			if(candidateRepo.existsByPhone(ob.getPhone()))
-			return new ResponseEntity<>(new ResponseAddCandidate("Phone number Already Exist!"),HttpStatus.BAD_REQUEST);
+			     return new ResponseEntity<>(new ResponseAddCandidate("Phone number Already Exist!"),HttpStatus.BAD_REQUEST);
 			return new ResponseEntity<>(new ResponseAddCandidate("CandidateDetail Add Successfully!",candidateRepo.insert(ob)),HttpStatus.OK);
 		}
 		}
@@ -124,8 +131,8 @@ return new DepartmentDetail(job);
 public ResponseEntity<ResponseModel> deleteCandidate(String id) {
 	if(candidateRepo.existsById(id))
 	{
-	candidateRepo.deleteById(id);
-	return new ResponseEntity<>(new ResponseModel("Candidate Detail Deleted"),HttpStatus.OK);
+	   candidateRepo.deleteById(id);
+	   return new ResponseEntity<>(new ResponseModel("Candidate Detail Deleted"),HttpStatus.OK);
 	}
 	else
 		return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
@@ -133,26 +140,26 @@ public ResponseEntity<ResponseModel> deleteCandidate(String id) {
 
 //     VIEW CANDIDATE FULL DETAIL
 public CandidateDetail viewCandidateDetail(String id) {
-return candidateRepo.findById(id).get();
+   return candidateRepo.findById(id).get();
 }
 
 //      DISPLAY EMPLOYEE LIST DETAIL BY PAGE
 public ArrayList<ListOfEmployee> employeeList(Pageable page) {
-Page<EmployeeDetail> list=employeeRepo.findAll(page);
-ArrayList<ListOfEmployee> result=new ArrayList<ListOfEmployee>();
-for(EmployeeDetail ob:list)
-{
-	ListOfEmployee object=new ListOfEmployee(ob.getId(),ob.getFirstName(),ob.getEmail(),ob.getDepartment(),ob.getRoll());
- result.add(object);
-}
-return result;
+  Page<EmployeeDetail> list=employeeRepo.findAll(page);
+  ArrayList<ListOfEmployee> result=new ArrayList<ListOfEmployee>();
+  for(EmployeeDetail ob:list)
+  {
+	 ListOfEmployee object=new ListOfEmployee(ob.getId(),ob.getFirstName(),ob.getEmail(),ob.getDepartment(),ob.getRole());
+     result.add(object);
+  }
+  return result;
 }
 
 //      EMPLOYEE ADDING AND UPDATING
 public ResponseEntity<ResponseAddEmployee> addemployee(EmployeeDetail ob) {
-if(ob.getId() != null)
-  {
-	if(ob.getPassword().equals(ob.getCpassword()))
+    if(ob.getId() != null)
+    {
+	  if(ob.getPassword().equals(ob.getCpassword()))
 		{
 		if(employeeRepo.existsByEmailAndIdIsNot(ob.getEmail(),ob.getId()))
 			return new ResponseEntity<>(new ResponseAddEmployee("Email Already exists!"),HttpStatus.BAD_REQUEST);
@@ -168,10 +175,10 @@ if(ob.getId() != null)
 	}
 	else
 	{
-	if(employeeRepo.existsByEmail(ob.getEmail()))
-		return new ResponseEntity<>(new ResponseAddEmployee("Email Already exists!"),HttpStatus.BAD_REQUEST);
-	if(employeeRepo.existsByPhone(ob.getPhone()))
-		return new ResponseEntity<>(new ResponseAddEmployee("Phone Number Already exists!"),HttpStatus.BAD_REQUEST);
+	   if(employeeRepo.existsByEmail(ob.getEmail()))
+		 return new ResponseEntity<>(new ResponseAddEmployee("Email Already exists!"),HttpStatus.BAD_REQUEST);
+	   if(employeeRepo.existsByPhone(ob.getPhone()))
+		 return new ResponseEntity<>(new ResponseAddEmployee("Phone Number Already exists!"),HttpStatus.BAD_REQUEST);
 	do
 	{
     rand = random.nextInt(10000);
@@ -191,13 +198,13 @@ return employeeRepo.findById(id).get();
 
 //       DELETE EMPLOYEE DETAIL
 public ResponseEntity<ResponseModel> deleteEmployee(String id) {
-if(employeeRepo.existsById(id))
-{
-employeeRepo.deleteById(id);
-return new ResponseEntity<>(new ResponseModel("Employee Detail Deleted Successfully"),HttpStatus.OK);
-}
-else
-	return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
+    if(employeeRepo.existsById(id))
+    {
+       employeeRepo.deleteById(id);
+       return new ResponseEntity<>(new ResponseModel("Employee Detail Deleted Successfully"),HttpStatus.OK);
+    }
+    else
+	   return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
 }
 
 //       ADMIN GIVE SOME CANDIDATE TO EMPLOYEE FOR INTERVIEW
@@ -221,57 +228,62 @@ public ArrayList<ListOfCandidate> employeeView(String id) {
 	return result;
 }
 
-    //    TRAINING PURPOSE
-
-//      GIVE CANDIDATE LIST
-public List<CandidateDetail> getalldetail(String pass) {
-	System.out.println(pass);
-	BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
-	
-	String encodedpass=encoder.encode(pass);
-	System.out.println(encodedpass);
-	boolean check=encoder.matches(pass, encodedpass);
-	if(check)
-		
-		System.out.println("password is right");
-	else
-		System.out.println("password i wrong");
-return candidateRepo.findAll();
+//    GIVE DATA FOR DROP DOWN
+public DropDownData dropDownDetail() {
+	ArrayList<String> position=new ArrayList<String>();
+	position.add("developer");position.add("designer");position.add("manager");
+	ArrayList<String> year=new ArrayList<String>();
+	year.add("2-3");year.add("3-4");year.add("4-5");
+	ArrayList<String> skill=new ArrayList<String>();
+	skill.add("java");skill.add("javaScript");skill.add("React Js");skill.add("Spring Boot");
+	ArrayList<String> location=new ArrayList<String>();
+	location.add("chennai");location.add("madurai");location.add("delhi");
+	ArrayList<String> qualification=new ArrayList<String>();
+	qualification.add("B.SC");qualification.add("MCA");qualification.add("B.E");
+return new DropDownData(position,year,skill,location,qualification);
 }
 
-
-//      USER EMAIL CHECK FOR  UPDATE PASSWORD
-public String emailChecking(String name) {
-	EmployeeDetail ob=employeeRepo.findByUserName(name);
-	if(ob == null)
-		return "UserName is incorrect";
+//     PANEL ADDING AND UPDATING
+public ResponseEntity<ResponseAddPanel> panelAdding(PanelDetail ob) {
+	if(ob.getId() == null)
+	{
+	    if(panelRepo.existsByUserName(ob.getUserName()))
+	       return new ResponseEntity<>(new ResponseAddPanel("UserName Already Taken!"),HttpStatus.BAD_REQUEST);
+	    if(panelRepo.existsByEmail(ob.getEmail()))
+		   return new ResponseEntity<>(new ResponseAddPanel("Email Already Taken!"),HttpStatus.BAD_REQUEST);
+	    if(panelRepo.existsByPhone(ob.getPhone()))
+		   return new ResponseEntity<>(new ResponseAddPanel("Phone Number Already Taken"),HttpStatus.BAD_REQUEST);
+	    BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+	    ob.setPassword(passwordEncoder.encode(ob.getPassword()));
+	    return new ResponseEntity<>(new ResponseAddPanel("Panel Create succesfully",panelRepo.insert(ob)),HttpStatus.OK);
+	}
 	else
 	{
-		Name=name;
-		int otp=random.nextInt(10000);
-		ob.setOtp(otp);
-		employeeRepo.save(ob);
-		return "Access for change password";
+		if(panelRepo.existsByUserNameAndIdIsNot(ob.getUserName(),ob.getId()))
+		    return new ResponseEntity<>(new ResponseAddPanel("UserName Already Taken!"),HttpStatus.BAD_REQUEST);
+		if(panelRepo.existsByEmailAndIdIsNot(ob.getEmail(),ob.getId()))
+			return new ResponseEntity<>(new ResponseAddPanel("Email Already Taken!"),HttpStatus.BAD_REQUEST);
+		if(panelRepo.existsByPhoneAndIdIsNot(ob.getPhone(),ob.getId()))
+			return new ResponseEntity<>(new ResponseAddPanel("Phone Number Already Taken"),HttpStatus.BAD_REQUEST);
+		BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+	    ob.setPassword(passwordEncoder.encode(ob.getPassword()));
+		return new ResponseEntity<>(new ResponseAddPanel("Panel Deatil Updated succesfully",panelRepo.save(ob)),HttpStatus.OK);
 	}
 }
 
-//       USER PASSSWORD UPDATE USING OTP 
-public String updatePassword(EmployeeDetail ob) {
-	EmployeeDetail ob1=employeeRepo.findByUserName(Name);
-	if(ob.getCpassword().equals(ob.getPassword())) {
-		if(ob1.getOtp() == ob.getOtp())
-		{
-			ob1.setPassword(ob.getPassword());
-			ob1.setOtp(0);
-			employeeRepo.save(ob1);
-			return "Password Update Successfully ";
-		}
-		else return "OTP is wrong";
+//      PANEL DETAIL DELETE
+public ResponseEntity<ResponseModel> deletePanel(String id) {
+	if(employeeRepo.existsById(id))
+	{
+	   employeeRepo.deleteById(id);
+	   return new ResponseEntity<>(new ResponseModel("Panel Detail Deleted Successfully"),HttpStatus.OK);
 	}
-	return "confirm Password is wrong";
+	else
+	   return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
 }
 
-public EmployeeDetail checkPath(String id) {
-	return employeeRepo.findById(id).get();
-}
+
+    //    TRAINING PURPOSE
+
+
 }

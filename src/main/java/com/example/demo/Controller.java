@@ -21,11 +21,13 @@ import com.example.demo.Response.ListOfCandidate;
 import com.example.demo.Response.ListOfEmployee;
 import com.example.demo.Response.ResponseAddCandidate;
 import com.example.demo.Response.ResponseAddEmployee;
+import com.example.demo.Response.ResponseAddPanel;
 import com.example.demo.Response.ResponseModel;
-import com.example.demo.dummyClass.DepartmentDetail;
+import com.example.demo.dummyClass.DropDownData;
 import com.example.demo.model.CandidateDetail;
 import com.example.demo.model.EmployeeCandidate;
 import com.example.demo.model.EmployeeDetail;
+import com.example.demo.model.PanelDetail;
 
 @RestController
 @CrossOrigin
@@ -60,13 +62,6 @@ public CandidateCount count()
 public ArrayList<ListOfCandidate> page(Pageable page)
 {
 	return service.page(page);
-}
-
-//     GIVE FORM DEATIL ( CANDIDATE JOB SELECTION)
-@GetMapping("jobData")
-public DepartmentDetail jobDetail()
-{
-	return service.jobDetail();
 }
 
 //     CANDIDATE ADDING AND UPDATING
@@ -132,23 +127,30 @@ public ArrayList<ListOfCandidate> employeeView(@RequestParam("id") String id)
 	return service.employeeView(id);	
 }
 
+//    GIVE DROP DOWN DATA FOR FORM FILLING
+@GetMapping("dropDownData")
+public DropDownData dropDownDetail()
+{
+return service.dropDownDetail();
+}
+
+//    PANEL CREATION
+@PostMapping("panel")
+public ResponseEntity<ResponseAddPanel> addPanel(@RequestBody PanelDetail ob)
+{
+	return service.panelAdding(ob);
+}
+
+//DELETE EMPLOYEE DETAIL
+@DeleteMapping("panel")
+public ResponseEntity<ResponseModel> deletePanel(@RequestParam("id") String id)
+{
+return service.deletePanel(id);
+}
+
+
+
 //   TRAINING PURPOSE
 
-//   GET ALL CANDIDATE DETAIL
-
-
-//EMAIL VALIDATION
-@PutMapping("emailCheck")
-public String emailCheck(@RequestParam("name") String name)
-{
-return service.emailChecking(name);
-}
-
-//UPDATE PASSWORD USING OTP
-@PutMapping("updatePassword")
-public String updatePassword(@RequestBody EmployeeDetail ob)
-{
-return service.updatePassword(ob);
-}
 }
 
