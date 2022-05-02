@@ -6,7 +6,6 @@ public class DropDownData {
 	private ArrayList<String> position;
 	private ArrayList<String> year;
 	private ArrayList<String> skill;
-	private Salary salary;
 	private ArrayList<String> location;
 	private ArrayList<String> qualification;
 	
@@ -41,12 +40,6 @@ public class DropDownData {
 	}
 	public void setSkill(ArrayList<String> skill) {
 		this.skill = skill;
-	}
-	public Salary getSalary() {
-		return salary;
-	}
-	public void setSalary(Salary salary) {
-		this.salary = salary;
 	}
 	public ArrayList<String> getLocation() {
 		return location;

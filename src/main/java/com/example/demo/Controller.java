@@ -25,6 +25,7 @@ import com.example.demo.Response.ResponseAddPanel;
 import com.example.demo.Response.ResponseModel;
 import com.example.demo.dummyClass.DropDownData;
 import com.example.demo.model.CandidateDetail;
+import com.example.demo.model.JobDescription;
 import com.example.demo.model.EmployeeCandidate;
 import com.example.demo.model.EmployeeDetail;
 import com.example.demo.model.PanelDetail;
@@ -148,6 +149,19 @@ public ResponseEntity<ResponseModel> deletePanel(@RequestParam("id") String id)
 return service.deletePanel(id);
 }
 
+//   CREATE JOBDESCRIPTION 
+@PostMapping("jobDescription")
+public ResponseEntity<ResponseModel> jobDescription(@RequestBody JobDescription ob)
+{
+	return service.jobDescription(ob);
+}
+
+//   DELETE JOBDESCRIPTION 
+@DeleteMapping("jobDescription")
+public ResponseEntity<ResponseModel> updateJobDescription(@RequestParam("id") String id)
+{
+	return service.deleteJobDescription(id);
+}
 
 
 //   TRAINING PURPOSE

@@ -1,10 +1,12 @@
 package com.example.demo.Response;
 
 import com.example.demo.dummyClass.ReturnData;
+import com.example.demo.model.JobDescription;
 
 public class ResponseModel {
 	private String msg;
 	private ReturnData data;
+	private JobDescription jobData;
 
 	public ResponseModel() {
 		// TODO Auto-generated constructor stub
@@ -18,6 +20,10 @@ public class ResponseModel {
 		super();
 		this.msg = msg;
 	}
+	public ResponseModel(String msg, JobDescription jobData) {
+		this.msg = msg;
+		this.jobData = jobData;
+	}
 	public ReturnData getData() {
 		return data;
 	}
@@ -29,5 +35,11 @@ public class ResponseModel {
 	}
 	public void setMsg(String msg) {
 		this.msg = msg;
+	}
+	public JobDescription getJobData() {
+		return jobData;
+	}
+	public void setJobData(JobDescription jobData) {
+		this.jobData = jobData;
 	}
 }

@@ -23,12 +23,14 @@ import com.example.demo.Response.ResponseModel;
 import com.example.demo.dummyClass.DropDownData;
 import com.example.demo.dummyClass.ReturnData;
 import com.example.demo.model.CandidateDetail;
+import com.example.demo.model.JobDescription;
 import com.example.demo.model.EmployeeCandidate;
 import com.example.demo.model.EmployeeDetail;
 import com.example.demo.model.PanelDetail;
 import com.example.demo.repository.CandidateRepository;
 import com.example.demo.repository.EmployeeCandidateRepository;
 import com.example.demo.repository.EmployeeRepository;
+import com.example.demo.repository.JobDescriptionRepository;
 import com.example.demo.repository.PanelRepository;
 
 @Service
@@ -41,6 +43,8 @@ public class service {
 	private EmployeeCandidateRepository employeeCandidateRepo;
 	@Autowired
 	private PanelRepository panelRepo;
+	@Autowired
+	private JobDescriptionRepository jobDescriptionRepo;
 	
 	public String Name;
 	int rand;
@@ -52,7 +56,7 @@ public class service {
 			EmployeeDetail ob1=employeeRepo.findByUserName(ob.getUserName());
 			BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 			if(ob1 == null)
-				return new ResponseEntity<>(new ResponseModel("Email Incorrect"),HttpStatus.UNAUTHORIZED);
+				return new ResponseEntity<>(new ResponseModel("UserName Incorrect"),HttpStatus.UNAUTHORIZED);
 			boolean check=true;
 			for(String role : ob1.getRole())
 			{
@@ -280,6 +284,24 @@ public ResponseEntity<ResponseModel> deletePanel(String id) {
 	}
 	else
 	   return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
+}
+
+//      ADD JOBDESCRIPTION AND UPDATE
+public ResponseEntity<ResponseModel> jobDescription(JobDescription ob) {
+	if(ob.getId() == null)
+		return new ResponseEntity<>(new ResponseModel("New JobDescription Was Created",jobDescriptionRepo.insert(ob)),HttpStatus.OK);
+	else
+	    return new ResponseEntity<>(new ResponseModel("JobDescription Was Updated",jobDescriptionRepo.save(ob)),HttpStatus.OK);
+}
+
+public ResponseEntity<ResponseModel> deleteJobDescription(String id) {
+	if(jobDescriptionRepo.existsById(id))
+	{
+		jobDescriptionRepo.deleteById(id);
+		return new ResponseEntity<>(new ResponseModel("JobDescription was deleted"),HttpStatus.OK);
+	}
+	else
+        return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
 }
 
 
