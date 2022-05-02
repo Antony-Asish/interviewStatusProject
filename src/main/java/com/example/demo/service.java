@@ -111,6 +111,20 @@ public class service {
 			return result;
 		}
 		
+		
+//	    CANDIDATE STATUS UPDATE
+		public ResponseEntity<ResponseAddCandidate> candidateStatusUpdate(String id, String status) {
+			CandidateDetail ob=candidateRepo.findById(id).get();
+			if(ob==null)
+				return new ResponseEntity<>(new ResponseAddCandidate("You give Wrong ID"),HttpStatus.BAD_REQUEST);
+			else
+			{
+				ob.setStatus(status);
+				return new ResponseEntity<>(new ResponseAddCandidate("Candidate was "+status,candidateRepo.save(ob)),HttpStatus.OK);
+			}		
+		}
+		
+		
 //      CANDIDATE ADDING AND CANDIDATE UPDATE
  	public ResponseEntity<ResponseAddCandidate> addcandidate(CandidateDetail ob)
 	{
@@ -294,6 +308,7 @@ public ResponseEntity<ResponseModel> jobDescription(JobDescription ob) {
 	    return new ResponseEntity<>(new ResponseModel("JobDescription Was Updated",jobDescriptionRepo.save(ob)),HttpStatus.OK);
 }
 
+//     DELETE JOBDISCRIPTIION
 public ResponseEntity<ResponseModel> deleteJobDescription(String id) {
 	if(jobDescriptionRepo.existsById(id))
 	{

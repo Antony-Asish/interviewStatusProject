@@ -65,6 +65,13 @@ public ArrayList<ListOfCandidate> page(Pageable page)
 	return service.page(page);
 }
 
+//CANDIDATE STATUS UPDATING
+@PostMapping("candidate/{status}/{id}")
+public ResponseEntity<ResponseAddCandidate> candidateStatusUpdate(@PathVariable("status") String status,@PathVariable("id") String id)
+{
+    return service.candidateStatusUpdate(id,status);
+}
+
 //     CANDIDATE ADDING AND UPDATING
 @PostMapping("candidate")
 public ResponseEntity<ResponseAddCandidate> addCandidate(@RequestBody CandidateDetail ob)
