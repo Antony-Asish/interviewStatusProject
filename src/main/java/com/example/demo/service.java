@@ -20,14 +20,15 @@ import com.example.demo.Response.ResponseAddCandidate;
 import com.example.demo.Response.ResponseAddEmployee;
 import com.example.demo.Response.ResponseAddPanel;
 import com.example.demo.Response.ResponseModel;
-import com.example.demo.dummyClass.DropDownData;
 import com.example.demo.dummyClass.ReturnData;
 import com.example.demo.model.CandidateDetail;
+import com.example.demo.model.DropDownData;
 import com.example.demo.model.JobDescription;
 import com.example.demo.model.EmployeeCandidate;
 import com.example.demo.model.EmployeeDetail;
 import com.example.demo.model.PanelDetail;
 import com.example.demo.repository.CandidateRepository;
+import com.example.demo.repository.DropDownRepository;
 import com.example.demo.repository.EmployeeCandidateRepository;
 import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.repository.JobDescriptionRepository;
@@ -45,6 +46,8 @@ public class service {
 	private PanelRepository panelRepo;
 	@Autowired
 	private JobDescriptionRepository jobDescriptionRepo;
+	@Autowired
+	private DropDownRepository dropDownRepo;
 	
 	public String Name;
 	int rand;
@@ -247,18 +250,13 @@ public ArrayList<ListOfCandidate> employeeView(String id) {
 }
 
 //    GIVE DATA FOR DROP DOWN
-public DropDownData dropDownDetail() {
-	ArrayList<String> position=new ArrayList<String>();
-	position.add("developer");position.add("designer");position.add("manager");
-	ArrayList<String> year=new ArrayList<String>();
-	year.add("2-3");year.add("3-4");year.add("4-5");
-	ArrayList<String> skill=new ArrayList<String>();
-	skill.add("java");skill.add("javaScript");skill.add("React Js");skill.add("Spring Boot");
-	ArrayList<String> location=new ArrayList<String>();
-	location.add("chennai");location.add("madurai");location.add("delhi");
-	ArrayList<String> qualification=new ArrayList<String>();
-	qualification.add("B.SC");qualification.add("MCA");qualification.add("B.E");
-return new DropDownData(position,year,skill,location,qualification);
+public List<DropDownData> dropDownDetail() {	
+    return dropDownRepo.findAll();
+}
+
+//    DROP DOWN DATA CREATE AND UPDATE
+public DropDownData dropDownCreate(DropDownData ob) {
+	return dropDownRepo.save(ob);
 }
 
 //     PANEL ADDING AND UPDATING
@@ -321,6 +319,4 @@ public ResponseEntity<ResponseModel> deleteJobDescription(String id) {
 
 
     //    TRAINING PURPOSE
-
-
 }

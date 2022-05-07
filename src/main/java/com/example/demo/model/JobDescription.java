@@ -17,6 +17,8 @@ public class JobDescription {
 	private Salary salary;
 	private ArrayList<String> location;
 	private ArrayList<String> qualification;
+	private String employeeId;
+	private ArrayList<String> points;
 	
 	public String getId() {
 		return id;

@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +24,8 @@ import com.example.demo.Response.ResponseAddCandidate;
 import com.example.demo.Response.ResponseAddEmployee;
 import com.example.demo.Response.ResponseAddPanel;
 import com.example.demo.Response.ResponseModel;
-import com.example.demo.dummyClass.DropDownData;
 import com.example.demo.model.CandidateDetail;
+import com.example.demo.model.DropDownData;
 import com.example.demo.model.JobDescription;
 import com.example.demo.model.EmployeeCandidate;
 import com.example.demo.model.EmployeeDetail;
@@ -67,7 +68,8 @@ public ArrayList<ListOfCandidate> page(Pageable page)
 
 //CANDIDATE STATUS UPDATING
 @PostMapping("candidate/{status}/{id}")
-public ResponseEntity<ResponseAddCandidate> candidateStatusUpdate(@PathVariable("status") String status,@PathVariable("id") String id)
+public ResponseEntity<ResponseAddCandidate> candidateStatusUpdate(@PathVariable("status") String status,
+		@PathVariable("id") String id)
 {
     return service.candidateStatusUpdate(id,status);
 }
@@ -137,9 +139,16 @@ public ArrayList<ListOfCandidate> employeeView(@RequestParam("id") String id)
 
 //    GIVE DROP DOWN DATA FOR FORM FILLING
 @GetMapping("dropDownData")
-public DropDownData dropDownDetail()
+public List<DropDownData> dropDownDetail()
 {
 return service.dropDownDetail();
+}
+
+//DROP DOWN DATA CREATE AND UPDATE
+@PostMapping("dropDownCreate")
+public DropDownData dropDownCreate(@RequestBody DropDownData ob)
+{
+	return service.dropDownCreate(ob);
 }
 
 //    PANEL CREATION
@@ -172,6 +181,7 @@ public ResponseEntity<ResponseModel> updateJobDescription(@RequestParam("id") St
 
 
 //   TRAINING PURPOSE
+
 
 }
 
