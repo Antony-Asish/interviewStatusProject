@@ -20,6 +20,18 @@ public class JobDescription {
 	private String employeeId;
 	private ArrayList<String> points;
 	
+	public String getEmployeeId() {
+		return employeeId;
+	}
+	public void setEmployeeId(String employeeId) {
+		this.employeeId = employeeId;
+	}
+	public ArrayList<String> getPoints() {
+		return points;
+	}
+	public void setPoints(ArrayList<String> points) {
+		this.points = points;
+	}
 	public String getId() {
 		return id;
 	}

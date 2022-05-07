@@ -5,19 +5,12 @@ import java.util.ArrayList;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document("DropDownData")
+@Document("DropDown_Data")
 public class DropDownData {
 	@Id
-	private String id;
 	private String dropDownName;
 	private ArrayList<String> data;
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
 	public String getDropDownName() {
 		return dropDownName;
 	}

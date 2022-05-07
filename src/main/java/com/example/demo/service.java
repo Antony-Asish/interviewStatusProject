@@ -250,12 +250,29 @@ public ArrayList<ListOfCandidate> employeeView(String id) {
 }
 
 //    GIVE DATA FOR DROP DOWN
-public List<DropDownData> dropDownDetail() {	
-    return dropDownRepo.findAll();
+public DropDownData dropDownDetail(String name) {	
+    return dropDownRepo.findById(name).get();
 }
 
-//    DROP DOWN DATA CREATE AND UPDATE
-public DropDownData dropDownCreate(DropDownData ob) {
+//    DROP DOWN DATA UPDATE
+public DropDownData dropDownUpdate(String dropDownName, ArrayList<String> newData) {
+	DropDownData ob =dropDownRepo.findById(dropDownName).get();
+	ArrayList<String> ob1=new ArrayList<String>(ob.getData());
+	for(String data: newData)
+		ob1.add(data);
+	ob.setData(ob1);
+	return dropDownRepo.save(ob);
+}
+
+//      DROP DOWN DATA DELETE
+public DropDownData dropDownDelete(String dropDownName, ArrayList<String> removeData) {
+	DropDownData ob =dropDownRepo.findById(dropDownName).get();
+	ArrayList<String> ob1=new ArrayList<String>(ob.getData());
+	for(int i=0;i<ob1.size();i++)
+	   for(int j=0;j<removeData.size();j++)
+          if(removeData.get(j).equals(ob1.get(i)))
+		     ob1.remove(i);
+	ob.setData(ob1);
 	return dropDownRepo.save(ob);
 }
 

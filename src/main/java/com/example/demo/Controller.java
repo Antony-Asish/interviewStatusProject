@@ -1,7 +1,6 @@
 package com.example.demo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -138,18 +137,27 @@ public ArrayList<ListOfCandidate> employeeView(@RequestParam("id") String id)
 }
 
 //    GIVE DROP DOWN DATA FOR FORM FILLING
-@GetMapping("dropDownData")
-public List<DropDownData> dropDownDetail()
+@GetMapping("dropDown/{name}")
+public DropDownData dropDownDetail(@PathVariable("name") String name)
 {
-return service.dropDownDetail();
+return service.dropDownDetail(name);
 }
 
 //DROP DOWN DATA CREATE AND UPDATE
-@PostMapping("dropDownCreate")
-public DropDownData dropDownCreate(@RequestBody DropDownData ob)
+@PostMapping("dropDown")
+public DropDownData dropDownUpdate(@RequestParam("dropDownName") String dropDownName,
+		@RequestParam("newData") ArrayList<String> newData	)
 {
-	return service.dropDownCreate(ob);
+	return service.dropDownUpdate(dropDownName,newData);
 }
+
+@DeleteMapping("dropDown")
+public DropDownData dropDownDelete(@RequestParam("dropDownName") String dropDownName,
+		@RequestParam("removeData") ArrayList<String> removeData)
+{
+	return service.dropDownDelete(dropDownName,removeData);
+}
+
 
 //    PANEL CREATION
 @PostMapping("panel")
