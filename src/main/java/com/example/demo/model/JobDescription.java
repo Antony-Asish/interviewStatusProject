@@ -12,7 +12,7 @@ public class JobDescription {
 	@Id
 	private String id;
 	private String position;
-	private String year;
+	private String experience;
 	private ArrayList<String> skill;
 	private Salary salary;
 	private ArrayList<String> location;
@@ -44,11 +44,12 @@ public class JobDescription {
 	public void setPosition(String position) {
 		this.position = position;
 	}
-	public String getYear() {
-		return year;
+	
+	public String getExperience() {
+		return experience;
 	}
-	public void setYear(String year) {
-		this.year = year;
+	public void setExperience(String experience) {
+		this.experience = experience;
 	}
 	public ArrayList<String> getSkill() {
 		return skill;

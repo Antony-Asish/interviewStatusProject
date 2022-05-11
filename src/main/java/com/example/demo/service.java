@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.Response.CandidateCount;
 import com.example.demo.Response.DashBoardReturn;
+import com.example.demo.Response.JobDescriptionResponse;
 import com.example.demo.Response.ListOfCandidate;
 import com.example.demo.Response.ListOfEmployee;
 import com.example.demo.Response.ResponseAddCandidate;
@@ -228,27 +229,6 @@ public ResponseEntity<ResponseModel> deleteEmployee(String id) {
 	   return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
 }
 
-//       ADMIN GIVE SOME CANDIDATE TO EMPLOYEE FOR INTERVIEW
-public EmployeeCandidate employeeCandidate(EmployeeCandidate ob) {
-	return employeeCandidateRepo.save(ob);
-}
-
-//       EMPLOYEE VIEWING HIS INTERVIEW CANDIDATE'S DETAILS
-public ArrayList<ListOfCandidate> employeeView(String id) {
-	EmployeeCandidate object=employeeCandidateRepo.findByEmpId(id);
-	ListOfCandidate list=new ListOfCandidate();
-	CandidateDetail ob=new CandidateDetail();
-	ArrayList<ListOfCandidate> result=new ArrayList<ListOfCandidate>();
-	for(int i=0;i<object.getCandidateId().size();i++)
-	{
-		ob=candidateRepo.findById(object.getCandidateId().get(i)).get();
-		list=new ListOfCandidate(ob.getId(),ob.getFirstName(),ob.getEmail()
-				,ob.getPhone(),ob.getSkill(),ob.getJob());
-	    result.add(list);
-	}
-	return result;
-}
-
 //    GIVE DATA FOR DROP DOWN
 public DropDownData dropDownDetail(String name) {	
     return dropDownRepo.findById(name).get();
@@ -274,6 +254,46 @@ public DropDownData dropDownDelete(String dropDownName, ArrayList<String> remove
 		     ob1.remove(i);
 	ob.setData(ob1);
 	return dropDownRepo.save(ob);
+}
+
+//     ADD JOBDESCRIPTION AND UPDATE
+public ResponseEntity<JobDescriptionResponse> createJobDescription(JobDescription ob) {
+if(ob.getId() == null)
+return new ResponseEntity<>(new JobDescriptionResponse("New JobDescription Was Created",jobDescriptionRepo.insert(ob)),HttpStatus.OK);
+else
+return new ResponseEntity<>(new JobDescriptionResponse("JobDescription Was Updated",jobDescriptionRepo.save(ob)),HttpStatus.OK);
+}
+
+//     DELETE JOBDISCRIPTIION
+public ResponseEntity<ResponseModel> deleteJobDescription(String id) {
+if(jobDescriptionRepo.existsById(id))
+{
+jobDescriptionRepo.deleteById(id);
+return new ResponseEntity<>(new ResponseModel("JobDescription was deleted"),HttpStatus.OK);
+}
+else
+return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
+}
+
+//      ADMIN GIVE SOME CANDIDATE TO EMPLOYEE FOR INTERVIEW
+public EmployeeCandidate employeeCandidate(EmployeeCandidate ob) {
+return employeeCandidateRepo.save(ob);
+}
+
+//      EMPLOYEE VIEWING HIS INTERVIEW CANDIDATE'S DETAILS
+public ArrayList<ListOfCandidate> employeeView(String id) {
+EmployeeCandidate object=employeeCandidateRepo.findByEmpId(id);
+ListOfCandidate list=new ListOfCandidate();
+CandidateDetail ob=new CandidateDetail();
+ArrayList<ListOfCandidate> result=new ArrayList<ListOfCandidate>();
+for(int i=0;i<object.getCandidateId().size();i++)
+{
+ob=candidateRepo.findById(object.getCandidateId().get(i)).get();
+list=new ListOfCandidate(ob.getId(),ob.getFirstName(),ob.getEmail()
+		,ob.getPhone(),ob.getSkill(),ob.getJob());
+result.add(list);
+}
+return result;
 }
 
 //     PANEL ADDING AND UPDATING
@@ -314,26 +334,6 @@ public ResponseEntity<ResponseModel> deletePanel(String id) {
 	else
 	   return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
 }
-
-//      ADD JOBDESCRIPTION AND UPDATE
-public ResponseEntity<ResponseModel> jobDescription(JobDescription ob) {
-	if(ob.getId() == null)
-		return new ResponseEntity<>(new ResponseModel("New JobDescription Was Created",jobDescriptionRepo.insert(ob)),HttpStatus.OK);
-	else
-	    return new ResponseEntity<>(new ResponseModel("JobDescription Was Updated",jobDescriptionRepo.save(ob)),HttpStatus.OK);
-}
-
-//     DELETE JOBDISCRIPTIION
-public ResponseEntity<ResponseModel> deleteJobDescription(String id) {
-	if(jobDescriptionRepo.existsById(id))
-	{
-		jobDescriptionRepo.deleteById(id);
-		return new ResponseEntity<>(new ResponseModel("JobDescription was deleted"),HttpStatus.OK);
-	}
-	else
-        return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
-}
-
 
     //    TRAINING PURPOSE
 }

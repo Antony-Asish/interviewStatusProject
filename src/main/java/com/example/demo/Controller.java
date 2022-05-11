@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Response.CandidateCount;
 import com.example.demo.Response.DashBoardReturn;
+import com.example.demo.Response.JobDescriptionResponse;
 import com.example.demo.Response.ListOfCandidate;
 import com.example.demo.Response.ListOfEmployee;
 import com.example.demo.Response.ResponseAddCandidate;
@@ -122,20 +123,6 @@ public ResponseEntity<ResponseModel> deleteEmployee(@RequestParam("id") String i
 return service.deleteEmployee(id);
 }
 
-//    ADMIN GIVE SOME CANDIDATE TO EMPLOYEE FOR INTERVIEW
-@PostMapping("employeeCandidate")
-public EmployeeCandidate employeeCandidate(@RequestBody EmployeeCandidate ob)
-{
-	return service.employeeCandidate(ob);	
-}
-
-//    EMPLOYEE VIEWING HIS INTERVIEW CANDIDATE DETAILS
-@GetMapping("employeeView")
-public ArrayList<ListOfCandidate> employeeView(@RequestParam("id") String id)
-{
-	return service.employeeView(id);	
-}
-
 //    GIVE DROP DOWN DATA FOR FORM FILLING
 @GetMapping("dropDown/{name}")
 public DropDownData dropDownDetail(@PathVariable("name") String name)
@@ -143,53 +130,66 @@ public DropDownData dropDownDetail(@PathVariable("name") String name)
 return service.dropDownDetail(name);
 }
 
-//DROP DOWN DATA CREATE AND UPDATE
+//    DROP DOWN DATA ADDING
 @PostMapping("dropDown")
-public DropDownData dropDownUpdate(@RequestParam("dropDownName") String dropDownName,
-		@RequestParam("newData") ArrayList<String> newData	)
+public DropDownData dropDownDataAdd(@RequestParam("name") String dropDownName,
+		@RequestParam("data") ArrayList<String> newData	)
 {
 	return service.dropDownUpdate(dropDownName,newData);
 }
 
+//    DROP DOWN DATA DELETEING
 @DeleteMapping("dropDown")
-public DropDownData dropDownDelete(@RequestParam("dropDownName") String dropDownName,
-		@RequestParam("removeData") ArrayList<String> removeData)
+public DropDownData dropDownDelete(@RequestParam("name") String dropDownName,
+		@RequestParam("data") ArrayList<String> removeData)
 {
 	return service.dropDownDelete(dropDownName,removeData);
 }
 
+//    CREATE JOBDESCRIPTION 
+@PostMapping("jobDescription")
+public ResponseEntity<JobDescriptionResponse> createJobDescription(@RequestBody JobDescription ob)
+{    
+	return service.createJobDescription(ob);
+}
 
-//    PANEL CREATION
+//     DELETE JOBDESCRIPTION 
+@DeleteMapping("jobDescription")
+public ResponseEntity<ResponseModel> deletJobDescription(@RequestParam("id") String id)
+{
+	return service.deleteJobDescription(id);
+}
+
+//     ADMIN GIVE SOME CANDIDATE TO EMPLOYEE FOR INTERVIEW
+@PostMapping("employeeCandidate")
+public EmployeeCandidate employeeCandidate(@RequestBody EmployeeCandidate ob)
+{
+return service.employeeCandidate(ob);	
+}
+
+//     EMPLOYEE VIEWING HIS INTERVIEW CANDIDATE DETAILS
+@GetMapping("employeeView")
+public ArrayList<ListOfCandidate> employeeView(@RequestParam("id") String id)
+{
+return service.employeeView(id);	
+}
+
+//     PANEL CREATION
 @PostMapping("panel")
 public ResponseEntity<ResponseAddPanel> addPanel(@RequestBody PanelDetail ob)
 {
-	return service.panelAdding(ob);
+return service.panelAdding(ob);
 }
 
-//DELETE EMPLOYEE DETAIL
+//     DELETE PANEL DETAIL
 @DeleteMapping("panel")
 public ResponseEntity<ResponseModel> deletePanel(@RequestParam("id") String id)
 {
 return service.deletePanel(id);
 }
 
-//   CREATE JOBDESCRIPTION 
-@PostMapping("jobDescription")
-public ResponseEntity<ResponseModel> jobDescription(@RequestBody JobDescription ob)
-{
-	return service.jobDescription(ob);
-}
-
-//   DELETE JOBDESCRIPTION 
-@DeleteMapping("jobDescription")
-public ResponseEntity<ResponseModel> updateJobDescription(@RequestParam("id") String id)
-{
-	return service.deleteJobDescription(id);
-}
-
 
 //   TRAINING PURPOSE
-
 
 }
 

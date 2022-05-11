@@ -30,7 +30,6 @@ public class EmployeeDetail {
 	private Long phone;
 	private address address;
 	private String position;
-	private int otp;
 	
 	public String getPassword() {
 		return password;
@@ -43,12 +42,6 @@ public class EmployeeDetail {
 	}
 	public void setCpassword(String cpassword) {
 		this.cpassword = cpassword;
-	}
-	public int getOtp() {
-		return otp;
-	}
-	public void setOtp(int otp) {
-		this.otp = otp;
 	}
 	public ArrayList<Education_Detail> getDegree() {
 		return degree;
