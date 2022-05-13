@@ -56,23 +56,23 @@ public class service {
 	Random random=new Random();
 	
 //     EMPLOYEES LOGIN VALIDATION
-		public ResponseEntity<ResponseModel> employeeLogin(EmployeeDetail ob) {
-			EmployeeDetail ob1=employeeRepo.findByUserName(ob.getUserName());
+		public ResponseEntity<ResponseModel> employeeLogin(EmployeeDetail employeeDetail) {
+			EmployeeDetail DBemployeeDetail=employeeRepo.findByUserName(employeeDetail.getUserName());
 			BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
-			if(ob1 == null)
+			if(DBemployeeDetail == null)
 				return new ResponseEntity<>(new ResponseModel("UserName Incorrect"),HttpStatus.UNAUTHORIZED);
 			boolean check=true;
-			for(String role : ob1.getRole())
+			for(String role : DBemployeeDetail.getRole())
 			{
-			   if(role.equals(ob.getPosition()))
+			   if(role.equals(employeeDetail.getPosition()))
 				 check=false;
 			}
 			if(check)
-				return new ResponseEntity<>(new ResponseModel("You are not "+ob.getPosition()),HttpStatus.UNAUTHORIZED);
-			if(passwordEncoder.matches(ob.getPassword(),ob1.getPassword()))
+				return new ResponseEntity<>(new ResponseModel("You are not "+employeeDetail.getPosition()),HttpStatus.UNAUTHORIZED);
+			if(passwordEncoder.matches(employeeDetail.getPassword(),DBemployeeDetail.getPassword()))
 			{
-				ReturnData data=new ReturnData(ob1.getId(),ob1.getUserName(),ob1.getEmail(),ob1.getFirstName(),ob1.getPhone());
-				return new ResponseEntity<>(new ResponseModel(ob.getPosition(),data),HttpStatus.OK);
+				ReturnData data=new ReturnData(DBemployeeDetail.getId(),DBemployeeDetail.getUserName(),DBemployeeDetail.getEmail(),DBemployeeDetail.getFirstName(),DBemployeeDetail.getPhone());
+				return new ResponseEntity<>(new ResponseModel(employeeDetail.getPosition(),data),HttpStatus.OK);
 		    }
 			else
 			return new ResponseEntity<>(new ResponseModel("PassWord Incorrect"),HttpStatus.UNAUTHORIZED);
@@ -80,19 +80,14 @@ public class service {
 
 //     DASHBORD CALCULATION 
 		public ArrayList<DashBoardReturn> dashBoard() {
-			ArrayList<DashBoardReturn> obj=new ArrayList<DashBoardReturn>();
-			List<CandidateDetail> candidate=candidateRepo.findAll();
-			DashBoardReturn object=new DashBoardReturn("Hired",candidateRepo.countByStatus("hired"));
-			obj.add(object);
-			object=new DashBoardReturn("Rejected",candidateRepo.countByStatus("rejected"));
-			obj.add(object);
-			object=new DashBoardReturn("WaitingList",candidateRepo.countByStatus("waitingList"));
-			obj.add(object);
-			object=new DashBoardReturn("Progress",candidateRepo.countByStatus("progress"));
-			obj.add(object);
-		    object=new DashBoardReturn("TotalCandidate",candidate.size());
-			obj.add(object);
-			return obj;
+			ArrayList<DashBoardReturn> dashBoard=new ArrayList<DashBoardReturn>();
+			List<CandidateDetail> candidateList=candidateRepo.findAll();
+			dashBoard.add(new DashBoardReturn("Hired",candidateRepo.countByStatus("hired")));
+			dashBoard.add(new DashBoardReturn("Rejected",candidateRepo.countByStatus("rejected")));
+			dashBoard.add(new DashBoardReturn("WaitingList",candidateRepo.countByStatus("waitingList")));
+			dashBoard.add(new DashBoardReturn("Progress",candidateRepo.countByStatus("progress")));
+		    dashBoard.add(new DashBoardReturn("TotalCandidate",candidateList.size()));
+			return dashBoard;
 		}
 			
 //       CANDIDATE DETAIL COUNT
@@ -104,48 +99,45 @@ public class service {
 		
  //      DISPLAY CANDIDATE LIST DETAIL BY PAGE
 		public ArrayList<ListOfCandidate> page(Pageable page) {
-			Page<CandidateDetail> list=candidateRepo.findAll(page);
-			ArrayList<ListOfCandidate> result=new ArrayList<ListOfCandidate>();
-			for(CandidateDetail ob:list)
-			{
-				ListOfCandidate object=new ListOfCandidate(ob.getId(),ob.getFirstName(),ob.getEmail()
-						,ob.getPhone(),ob.getSkill(),ob.getJob());
-			    result.add(object);
-			}
-			return result;
+			Page<CandidateDetail> allCandidateList=candidateRepo.findAll(page);
+			ArrayList<ListOfCandidate> pageByCandidateList=new ArrayList<ListOfCandidate>();
+			for(CandidateDetail ob:allCandidateList)
+				pageByCandidateList.add(new ListOfCandidate(ob.getId(),ob.getFirstName(),ob.getEmail()
+						,ob.getPhone(),ob.getSkill(),ob.getJob()));
+			return pageByCandidateList;
 		}
 		
 		
 //	    CANDIDATE STATUS UPDATE
 		public ResponseEntity<ResponseAddCandidate> candidateStatusUpdate(String id, String status) {
-			CandidateDetail ob=candidateRepo.findById(id).get();
-			if(ob==null)
+			CandidateDetail candidateDetail=candidateRepo.findById(id).get();
+			if(candidateDetail==null)
 				return new ResponseEntity<>(new ResponseAddCandidate("You give Wrong ID"),HttpStatus.BAD_REQUEST);
 			else
 			{
-				ob.setStatus(status);
-				return new ResponseEntity<>(new ResponseAddCandidate("Candidate was "+status,candidateRepo.save(ob)),HttpStatus.OK);
+				candidateDetail.setStatus(status);
+				return new ResponseEntity<>(new ResponseAddCandidate("Candidate was "+status,candidateRepo.save(candidateDetail)),HttpStatus.OK);
 			}		
 		}
 		
 		
 //      CANDIDATE ADDING AND CANDIDATE UPDATE
- 	public ResponseEntity<ResponseAddCandidate> addcandidate(CandidateDetail ob)
+ 	public ResponseEntity<ResponseAddCandidate> addcandidate(CandidateDetail candidateDetail)
 	{
-		if(ob.getId() != null)
+		if(candidateDetail.getId() != null)
 		{
-			if(candidateRepo.existsByEmailAndIdIsNot(ob.getEmail(),ob.getId()))
+			if(candidateRepo.existsByEmailAndIdIsNot(candidateDetail.getEmail(),candidateDetail.getId()))
 				 return new ResponseEntity<>(new ResponseAddCandidate("Email Already Exist!"),HttpStatus.BAD_REQUEST);
-			if(candidateRepo.existsByPhoneAndIdIsNot(ob.getPhone(),ob.getId()))
+			if(candidateRepo.existsByPhoneAndIdIsNot(candidateDetail.getPhone(),candidateDetail.getId()))
 			    return new ResponseEntity<>(new ResponseAddCandidate("Phone number Already Exist!"),HttpStatus.BAD_REQUEST);
-			return new ResponseEntity<>(new ResponseAddCandidate("candidateDetail Updated",candidateRepo.save(ob)),HttpStatus.OK);	
+			return new ResponseEntity<>(new ResponseAddCandidate("candidateDetail Updated",candidateRepo.save(candidateDetail)),HttpStatus.OK);	
 		}  
 		else {
-			if(candidateRepo.existsByEmail(ob.getEmail()))
+			if(candidateRepo.existsByEmail(candidateDetail.getEmail()))
 				 return new ResponseEntity<>(new ResponseAddCandidate("Email Already Exist!"),HttpStatus.BAD_REQUEST);
-			if(candidateRepo.existsByPhone(ob.getPhone()))
+			if(candidateRepo.existsByPhone(candidateDetail.getPhone()))
 			     return new ResponseEntity<>(new ResponseAddCandidate("Phone number Already Exist!"),HttpStatus.BAD_REQUEST);
-			return new ResponseEntity<>(new ResponseAddCandidate("CandidateDetail Add Successfully!",candidateRepo.insert(ob)),HttpStatus.OK);
+			return new ResponseEntity<>(new ResponseAddCandidate("CandidateDetail Add Successfully!",candidateRepo.insert(candidateDetail)),HttpStatus.OK);
 		}
 		}
 	
@@ -166,56 +158,53 @@ public CandidateDetail viewCandidateDetail(String id) {
 }
 
 //      DISPLAY EMPLOYEE LIST DETAIL BY PAGE
-public ArrayList<ListOfEmployee> employeeList(Pageable page) {
-  Page<EmployeeDetail> list=employeeRepo.findAll(page);
-  ArrayList<ListOfEmployee> result=new ArrayList<ListOfEmployee>();
-  for(EmployeeDetail ob:list)
-  {
-	 ListOfEmployee object=new ListOfEmployee(ob.getId(),ob.getFirstName(),ob.getEmail(),ob.getDepartment(),ob.getRole());
-     result.add(object);
-  }
-  return result;
-}
+      public ArrayList<ListOfEmployee> employeeList(Pageable page) {
+         Page<EmployeeDetail> employeeList=employeeRepo.findAll(page);
+         ArrayList<ListOfEmployee> pageByEmployeeList=new ArrayList<ListOfEmployee>();
+         for(EmployeeDetail ob:employeeList)
+	         pageByEmployeeList.add(new ListOfEmployee(ob.getId(),ob.getFirstName(),ob.getEmail(),ob.getDepartment(),ob.getRole()));
+         return pageByEmployeeList;
+    }
 
 //      EMPLOYEE ADDING AND UPDATING
-public ResponseEntity<ResponseAddEmployee> addemployee(EmployeeDetail ob) {
-    if(ob.getId() != null)
+public ResponseEntity<ResponseAddEmployee> addemployee(EmployeeDetail employeeDetail) {
+    if(employeeDetail.getId() != null)
     {
-	  if(ob.getPassword().equals(ob.getCpassword()))
+	  if(employeeDetail.getPassword().equals(employeeDetail.getCpassword()))
 		{
-		if(employeeRepo.existsByEmailAndIdIsNot(ob.getEmail(),ob.getId()))
+		if(employeeRepo.existsByEmailAndIdIsNot(employeeDetail.getEmail(),employeeDetail.getId()))
 			return new ResponseEntity<>(new ResponseAddEmployee("Email Already exists!"),HttpStatus.BAD_REQUEST);
-		if(employeeRepo.existsByPhoneAndIdIsNot(ob.getPhone(),ob.getId()))
+		if(employeeRepo.existsByPhoneAndIdIsNot(employeeDetail.getPhone(),employeeDetail.getId()))
 			return new ResponseEntity<>(new ResponseAddEmployee("Phone Number Already exists!"),HttpStatus.BAD_REQUEST);
 		BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
-		String password=passwordEncoder.encode(ob.getPassword());
-		ob.setPassword(password);
-		ob.setCpassword("");
-		return new ResponseEntity<>(new ResponseAddEmployee("Employee Detail Update Successfully",employeeRepo.save(ob)),HttpStatus.OK);
+		String password=passwordEncoder.encode(employeeDetail.getPassword());
+		employeeDetail.setPassword(password);
+		employeeDetail.setCpassword(null);
+		return new ResponseEntity<>(new ResponseAddEmployee("Employee Detail Update Successfully",employeeRepo.save(employeeDetail)),HttpStatus.OK);
 		}
 		return new ResponseEntity<>(new ResponseAddEmployee("Password And ConfirmPassword not same"),HttpStatus.BAD_REQUEST);
 	}
 	else
 	{
-	   if(employeeRepo.existsByEmail(ob.getEmail()))
+	   if(employeeRepo.existsByEmail(employeeDetail.getEmail()))
 		 return new ResponseEntity<>(new ResponseAddEmployee("Email Already exists!"),HttpStatus.BAD_REQUEST);
-	   if(employeeRepo.existsByPhone(ob.getPhone()))
+	   if(employeeRepo.existsByPhone(employeeDetail.getPhone()))
 		 return new ResponseEntity<>(new ResponseAddEmployee("Phone Number Already exists!"),HttpStatus.BAD_REQUEST);
 	do
 	{
     rand = random.nextInt(10000);
-	ob.setUserName(ob.getFirstName()+rand+"@icanio");
-	}while(employeeRepo.existsByUserName(ob.getUserName()));
+    employeeDetail.setUserName(employeeDetail.getFirstName()+rand+"@icanio");
+	}while(employeeRepo.existsByUserName(employeeDetail.getUserName()));
 	}
 	BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
-	String password = passwordEncoder.encode(ob.getFirstName()+rand+"@icanio");
-	ob.setPassword(password);
-	return new ResponseEntity<>(new ResponseAddEmployee("New Employee's UserId is "+ob.getUserName(),employeeRepo.insert(ob)),HttpStatus.OK);
+	String password = passwordEncoder.encode(employeeDetail.getFirstName()+rand+"@icanio");
+	employeeDetail.setPassword(password);
+	return new ResponseEntity<>(new ResponseAddEmployee("New Employee's UserId is "+employeeDetail.getUserName(),employeeRepo.insert(employeeDetail)),HttpStatus.OK);
 }
 
 //       VIEW EMPLOYEE FULL DETAIL
 public EmployeeDetail viewEmployeeDetail(String id) {
-return employeeRepo.findById(id).get();
+    return employeeRepo.findById(id).get();
 }
 
 //       DELETE EMPLOYEE DETAIL
@@ -237,43 +226,47 @@ public DropDownData dropDownDetail(String name) {
 //    DROP DOWN DATA UPDATE
 public DropDownData dropDownUpdate(String dropDownName, ArrayList<String> newData) {
 	DropDownData ob =dropDownRepo.findById(dropDownName).get();
-	ArrayList<String> ob1=new ArrayList<String>(ob.getData());
+	ArrayList<String> dataBaseData=new ArrayList<String>(ob.getData());
 	for(String data: newData)
-		ob1.add(data);
-	ob.setData(ob1);
+		dataBaseData.add(data);
+	ob.setData(dataBaseData);
 	return dropDownRepo.save(ob);
 }
 
 //      DROP DOWN DATA DELETE
 public DropDownData dropDownDelete(String dropDownName, ArrayList<String> removeData) {
 	DropDownData ob =dropDownRepo.findById(dropDownName).get();
-	ArrayList<String> ob1=new ArrayList<String>(ob.getData());
-	for(int i=0;i<ob1.size();i++)
+	ArrayList<String> dataBaseData=new ArrayList<String>(ob.getData());
+	for(int i=0;i<dataBaseData.size();i++)
 	   for(int j=0;j<removeData.size();j++)
-          if(removeData.get(j).equals(ob1.get(i)))
-		     ob1.remove(i);
-	ob.setData(ob1);
+          if(removeData.get(j).equals(dataBaseData.get(i)))
+        	  dataBaseData.remove(i);
+	ob.setData(dataBaseData);
 	return dropDownRepo.save(ob);
 }
 
 //     ADD JOBDESCRIPTION AND UPDATE
-public ResponseEntity<JobDescriptionResponse> createJobDescription(JobDescription ob) {
-if(ob.getId() == null)
-return new ResponseEntity<>(new JobDescriptionResponse("New JobDescription Was Created",jobDescriptionRepo.insert(ob)),HttpStatus.OK);
-else
-return new ResponseEntity<>(new JobDescriptionResponse("JobDescription Was Updated",jobDescriptionRepo.save(ob)),HttpStatus.OK);
-}
+   public ResponseEntity<JobDescriptionResponse> createJobDescription(JobDescription ob) {
+        if(ob.getId() == null)
+            return new ResponseEntity<>(new JobDescriptionResponse("New JobDescription Was Created",jobDescriptionRepo.insert(ob)),HttpStatus.OK);
+        else
+           return new ResponseEntity<>(new JobDescriptionResponse("JobDescription Was Updated",jobDescriptionRepo.save(ob)),HttpStatus.OK);
+    }
 
 //     DELETE JOBDISCRIPTIION
-public ResponseEntity<ResponseModel> deleteJobDescription(String id) {
-if(jobDescriptionRepo.existsById(id))
-{
-jobDescriptionRepo.deleteById(id);
-return new ResponseEntity<>(new ResponseModel("JobDescription was deleted"),HttpStatus.OK);
-}
-else
-return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
-}
+    public ResponseEntity<ResponseModel> deleteJobDescription(String id) {
+        if(jobDescriptionRepo.existsById(id))
+        {
+           jobDescriptionRepo.deleteById(id);
+           return new ResponseEntity<>(new ResponseModel("JobDescription was deleted"),HttpStatus.OK);
+        }
+        else
+           return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
+     }
+
+
+///      MY ADDDITIONAL WORK 
+
 
 //      ADMIN GIVE SOME CANDIDATE TO EMPLOYEE FOR INTERVIEW
 public EmployeeCandidate employeeCandidate(EmployeeCandidate ob) {

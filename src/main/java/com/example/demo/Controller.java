@@ -67,7 +67,7 @@ public ArrayList<ListOfCandidate> page(Pageable page)
 }
 
 //CANDIDATE STATUS UPDATING
-@PostMapping("candidate/{status}/{id}")
+@PostMapping("candidate/{id}/{status}")
 public ResponseEntity<ResponseAddCandidate> candidateStatusUpdate(@PathVariable("status") String status,
 		@PathVariable("id") String id)
 {
@@ -89,8 +89,8 @@ return service.viewCandidateDetail(id);
 }
 
 //     DELETE CANDIDATE DETAIL
-@DeleteMapping("candidate")
-public ResponseEntity<ResponseModel> deleteCandidate(@RequestParam("id") String id)
+@DeleteMapping("candidate/{id}")
+public ResponseEntity<ResponseModel> deleteCandidate(@PathVariable("id") String id)
 {
 return service.deleteCandidate(id);
 }
@@ -117,13 +117,13 @@ return service.viewEmployeeDetail(id);
 }
 
 //    DELETE EMPLOYEE DETAIL
-@DeleteMapping("employee")
-public ResponseEntity<ResponseModel> deleteEmployee(@RequestParam("id") String id)
+@DeleteMapping("employee/{id}")
+public ResponseEntity<ResponseModel> deleteEmployee(@PathVariable("id") String id)
 {
 return service.deleteEmployee(id);
 }
 
-//    GIVE DROP DOWN DATA FOR FORM FILLING
+//    GIVE DROP DOWN DATA 
 @GetMapping("dropDown/{name}")
 public DropDownData dropDownDetail(@PathVariable("name") String name)
 {
@@ -154,11 +154,15 @@ public ResponseEntity<JobDescriptionResponse> createJobDescription(@RequestBody 
 }
 
 //     DELETE JOBDESCRIPTION 
-@DeleteMapping("jobDescription")
-public ResponseEntity<ResponseModel> deletJobDescription(@RequestParam("id") String id)
+@DeleteMapping("jobDescription/{id}")
+public ResponseEntity<ResponseModel> deletJobDescription(@PathVariable("id") String id)
 {
 	return service.deleteJobDescription(id);
 }
+
+
+//     THIS IS MY ADDITIONAL WORK 
+
 
 //     ADMIN GIVE SOME CANDIDATE TO EMPLOYEE FOR INTERVIEW
 @PostMapping("employeeCandidate")
