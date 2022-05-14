@@ -223,6 +223,11 @@ public DropDownData dropDownDetail(String name) {
     return dropDownRepo.findById(name).get();
 }
 
+//    CREATE NEW DROP DOWN
+public DropDownData newDropDownCreate(DropDownData newDropDown) {
+     return dropDownRepo.save(newDropDown);
+}
+
 //    DROP DOWN DATA UPDATE
 public DropDownData dropDownUpdate(String dropDownName, ArrayList<String> newData) {
 	DropDownData ob =dropDownRepo.findById(dropDownName).get();
@@ -237,10 +242,14 @@ public DropDownData dropDownUpdate(String dropDownName, ArrayList<String> newDat
 public DropDownData dropDownDelete(String dropDownName, ArrayList<String> removeData) {
 	DropDownData ob =dropDownRepo.findById(dropDownName).get();
 	ArrayList<String> dataBaseData=new ArrayList<String>(ob.getData());
-	for(int i=0;i<dataBaseData.size();i++)
-	   for(int j=0;j<removeData.size();j++)
-          if(removeData.get(j).equals(dataBaseData.get(i)))
-        	  dataBaseData.remove(i);
+	int i=0;
+	for(String role : removeData)
+		for(String DBrole : dataBaseData)
+			{
+			if(role.equals(DBrole))
+				dataBaseData.remove(i);
+			i++;
+			}			
 	ob.setData(dataBaseData);
 	return dropDownRepo.save(ob);
 }

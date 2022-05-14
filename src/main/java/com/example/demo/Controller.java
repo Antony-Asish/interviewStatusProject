@@ -130,6 +130,13 @@ public DropDownData dropDownDetail(@PathVariable("name") String name)
 return service.dropDownDetail(name);
 }
 
+//    CREATE NEW DROP DOWN DATA
+@PostMapping("newDropDown")
+public DropDownData newDropDown(@RequestBody DropDownData ob)
+{
+	return service.newDropDownCreate(ob);
+}
+
 //    DROP DOWN DATA ADDING
 @PostMapping("dropDown")
 public DropDownData dropDownDataAdd(@RequestParam("name") String dropDownName,
@@ -194,6 +201,7 @@ return service.deletePanel(id);
 
 
 //   TRAINING PURPOSE
+
 
 }
 

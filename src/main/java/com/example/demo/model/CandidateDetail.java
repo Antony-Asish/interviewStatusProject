@@ -15,9 +15,9 @@ import com.example.demo.dummyClass.address;
 public class CandidateDetail {
 	@Id
 	private String id;
-	private String userName;
 	private String firstName;
 	private String lastName;
+	private String userName;
 	private String email;
 	private Date dob;
 	private String gender;
