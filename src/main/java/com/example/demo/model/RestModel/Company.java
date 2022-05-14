@@ -1,4 +1,4 @@
-package com.example.demo.dummyClass;
+package com.example.demo.model.RestModel;
 
 public class Company {
 	private String name;

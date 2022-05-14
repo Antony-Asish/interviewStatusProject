@@ -7,9 +7,9 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.example.demo.dummyClass.Company;
-import com.example.demo.dummyClass.Education_Detail;
-import com.example.demo.dummyClass.address;
+import com.example.demo.model.RestModel.Company;
+import com.example.demo.model.RestModel.Education_Detail;
+import com.example.demo.model.RestModel.address;
 
 @Document("Candidate_Detail")
 public class CandidateDetail {

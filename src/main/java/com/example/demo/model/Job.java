@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.example.demo.dummyClass.Salary;
+import com.example.demo.model.RestModel.Salary;
 
 @Document("Job_Description")
-public class JobDescription {
+public class Job {
 	@Id
 	private String id;
 	private String position;

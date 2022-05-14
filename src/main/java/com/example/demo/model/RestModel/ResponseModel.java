@@ -1,6 +1,4 @@
-package com.example.demo.Response;
-
-import com.example.demo.dummyClass.ReturnData;
+package com.example.demo.model.RestModel;
 
 public class ResponseModel {
 	private String msg;

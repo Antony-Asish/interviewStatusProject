@@ -1,4 +1,4 @@
-package com.example.demo.Response;
+package com.example.demo.model.RestModel;
 
 import java.util.ArrayList;
 
