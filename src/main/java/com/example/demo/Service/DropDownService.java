@@ -60,13 +60,14 @@ public DropDownData dropDownDelete(DropDownData dropDownData) {
 	return dropDownRepo.save(ob);
 }
 
+//    EMPLOYEE LIST DROP DOWN
 public ArrayList<DropDownEmployeeData> dropDownEmployeeList() {
 	List<EmployeeDetail> employeeList=employeeRepo.findAll();
-	ArrayList<DropDownEmployeeData> returnData=new ArrayList<DropDownEmployeeData>();
+	ArrayList<DropDownEmployeeData> returnEmployeeListData=new ArrayList<DropDownEmployeeData>();
 	for(EmployeeDetail employee : employeeList)
 	{
-		 returnData.add(new DropDownEmployeeData(employee.getId(),employee.getFirstName()));
+		returnEmployeeListData.add(new DropDownEmployeeData(employee.getId(),employee.getFirstName()));
 	}
-	return returnData;
+	return returnEmployeeListData;
 }
 }

@@ -1,22 +1,17 @@
 package com.example.demo.model;
 
-import java.util.ArrayList;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document("Employee_Detail")
-public class PanelDetail {
+@Document
+public class ClientDetail {
 	@Id
 	private String id;
 	private String firstName;
 	private String lastName;
 	private String userName;
-	private String password;
 	private String email;
 	private Long phone;
-	private ArrayList<String> role;
-	
 	public String getId() {
 		return id;
 	}
@@ -41,13 +36,6 @@ public class PanelDetail {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
 	public String getEmail() {
 		return email;
 	}
@@ -59,11 +47,5 @@ public class PanelDetail {
 	}
 	public void setPhone(Long phone) {
 		this.phone = phone;
-	}
-	public ArrayList<String> getRole() {
-		return role;
-	}
-	public void setRole(ArrayList<String> role) {
-		this.role = role;
 	}
 }

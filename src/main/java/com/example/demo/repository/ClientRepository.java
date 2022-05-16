@@ -2,15 +2,15 @@ package com.example.demo.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.example.demo.model.PanelDetail;
+import com.example.demo.model.ClientDetail;
 
-public interface PanelRepository extends MongoRepository<PanelDetail,String> {
-
-	boolean existsByUserName(String userName);
+public interface ClientRepository extends MongoRepository<ClientDetail,String> {
 
 	boolean existsByEmail(String email);
 
 	boolean existsByPhone(Long phone);
+
+	boolean existsByUserName(String userName);
 
 	boolean existsByUserNameAndIdIsNot(String userName, String id);
 

@@ -1,6 +1,7 @@
 package com.example.demo.Controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Service.EmployeeService;
+import com.example.demo.model.CandidateDetail;
 import com.example.demo.model.EmployeeDetail;
 import com.example.demo.model.RestModel.DashBoardReturn;
 import com.example.demo.model.RestModel.ListOfEmployee;
@@ -33,6 +35,13 @@ public ArrayList<DashBoardReturn> dashBoard() {
 	return employeeService.dashBoard();
 }	
 	
+//  GET REPORT USING DASHBOARD DETAIL
+@GetMapping("dashBoard/{name}")
+public List<CandidateDetail> dashBoardReport(@PathVariable("name") String statusName)
+{
+	return employeeService.dashBoardReport(statusName);
+}
+
 //  EMPLOYEE ADDING AND UPDATING
 @PostMapping("employee")
 public ResponseEntity<ResponseAddEmployee> employeeAdding(@RequestBody EmployeeDetail ob)

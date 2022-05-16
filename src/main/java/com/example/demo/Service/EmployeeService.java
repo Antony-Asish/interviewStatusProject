@@ -44,6 +44,11 @@ public class EmployeeService {
 			return dashBoard;
 		}
 	
+//    GET REPORT USING DASHBOARD DETAIL
+	public List<CandidateDetail> dashBoardReport(String statusName) {
+		return candidateRepo.findByStatus(statusName);
+	}
+		
 //  DISPLAY EMPLOYEE LIST DETAIL BY PAGE
   public ArrayList<ListOfEmployee> employeeList(Pageable page) {
      Page<EmployeeDetail> employeeList=employeeRepo.findAll(page);
@@ -104,4 +109,5 @@ if(employeeRepo.existsById(id))
 else
    return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
 }
+
 }

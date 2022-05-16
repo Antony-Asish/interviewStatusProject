@@ -18,7 +18,7 @@ public class Job {
 	private ArrayList<String> location;
 	private ArrayList<String> qualification;
 	private String employeeId;
-	private ArrayList<String> points;
+	private ArrayList<String> responsiblities;
 	
 	public String getEmployeeId() {
 		return employeeId;
@@ -26,11 +26,12 @@ public class Job {
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
 	}
-	public ArrayList<String> getPoints() {
-		return points;
+	
+	public ArrayList<String> getResponsiblities() {
+		return responsiblities;
 	}
-	public void setPoints(ArrayList<String> points) {
-		this.points = points;
+	public void setResponsiblities(ArrayList<String> responsiblities) {
+		this.responsiblities = responsiblities;
 	}
 	public String getId() {
 		return id;
