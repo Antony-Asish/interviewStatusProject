@@ -10,8 +10,12 @@ public class ClientDetail {
 	private String firstName;
 	private String lastName;
 	private String userName;
+	private String password;
+	private String cpassword;
 	private String email;
 	private Long phone;
+	
+	
 	public String getId() {
 		return id;
 	}
@@ -35,6 +39,18 @@ public class ClientDetail {
 	}
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getCpassword() {
+		return cpassword;
+	}
+	public void setCpassword(String cpassword) {
+		this.cpassword = cpassword;
 	}
 	public String getEmail() {
 		return email;

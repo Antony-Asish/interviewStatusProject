@@ -1,18 +1,24 @@
 package com.example.demo.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.model.CandidateDetail;
 import com.example.demo.model.ClientDetail;
 import com.example.demo.model.RestModel.ClientAddResponse;
+import com.example.demo.model.RestModel.DashBoardReturn;
+import com.example.demo.model.RestModel.ListOfCandidate;
 import com.example.demo.model.RestModel.ResponseModel;
 import com.example.demo.model.RestModel.ShowClientList;
+import com.example.demo.repository.CandidateRepository;
 import com.example.demo.repository.ClientRepository;
 
 @Service
@@ -20,6 +26,9 @@ public class ClientService {
 
 	@Autowired
 	private ClientRepository clientRepo;
+	
+	@Autowired
+	private CandidateRepository candidateRepo;
 	
    //  SHOW CLIENT LIST USING PAGINATION
 	public ArrayList<ShowClientList> clientList(Pageable page) {
@@ -33,8 +42,20 @@ public class ClientService {
 		return clientList;
 	}
 	
+	//   SHOW CLIENT DASHBOARD DETAIL
+	public ArrayList<DashBoardReturn> clientDashBoard(String clientId) {
+		ArrayList<DashBoardReturn> clientDashBoard=new ArrayList<DashBoardReturn>();
+		clientDashBoard.add(new DashBoardReturn("Hired",candidateRepo.countByStatusAndClientIdIs("hired",clientId)));
+		clientDashBoard.add(new DashBoardReturn("Rejected",candidateRepo.countByStatusAndClientIdIs("rejected",clientId)));
+		clientDashBoard.add(new DashBoardReturn("WaitingList",candidateRepo.countByStatusAndClientIdIs("waitingList",clientId)));
+		clientDashBoard.add(new DashBoardReturn("Progress",candidateRepo.countByStatusAndClientIdIs("progress",clientId)));
+		clientDashBoard.add(new DashBoardReturn("TotalCandidate",candidateRepo.countByClientId(clientId)));
+		return clientDashBoard;
+	}
+	
 	//   NEW CLIENT ADDING AND UPDATING
 	public ResponseEntity<ClientAddResponse> clientAdding(ClientDetail clientDetail) {
+		 BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 		if(clientDetail.getId()==null)
 		{
 			if(clientRepo.existsByUserName(clientDetail.getUserName()))
@@ -43,17 +64,27 @@ public class ClientService {
 			    return new ResponseEntity<>(new ClientAddResponse("Email Already Exists!"),HttpStatus.BAD_REQUEST);
 		    if(clientRepo.existsByPhone(clientDetail.getPhone()))
 		     	return new ResponseEntity<>(new ClientAddResponse("Phone Number Already Exists!"),HttpStatus.BAD_REQUEST);
+			String password=passwordEncoder.encode(clientDetail.getPassword());
+			clientDetail.setPassword(password);
 		    return new ResponseEntity<>(new ClientAddResponse("New Client Detail Added",clientRepo.insert(clientDetail)),HttpStatus.OK);
 		}
 		else
 		{
-			if(clientRepo.existsByUserNameAndIdIsNot(clientDetail.getUserName(),clientDetail.getId()))
-			    return new ResponseEntity<>(new ClientAddResponse("UserName Already Exists!"),HttpStatus.BAD_REQUEST);
-			 if(clientRepo.existsByEmailAndIdIsNot(clientDetail.getEmail(),clientDetail.getId()))
+			if(clientDetail.getPassword().equals( clientDetail.getCpassword()))
+			{
+			    if(clientRepo.existsByUserNameAndIdIsNot(clientDetail.getUserName(),clientDetail.getId()))
+			        return new ResponseEntity<>(new ClientAddResponse("UserName Already Exists!"),HttpStatus.BAD_REQUEST);
+			    if(clientRepo.existsByEmailAndIdIsNot(clientDetail.getEmail(),clientDetail.getId()))
 				    return new ResponseEntity<>(new ClientAddResponse("Email Already Exists!"),HttpStatus.BAD_REQUEST);
-			 if(clientRepo.existsByPhoneAndIdIsNot(clientDetail.getPhone(),clientDetail.getId()))
+			    if(clientRepo.existsByPhoneAndIdIsNot(clientDetail.getPhone(),clientDetail.getId()))
 			     	return new ResponseEntity<>(new ClientAddResponse("Phone Number Already Exists!"),HttpStatus.BAD_REQUEST);
-			 return new ResponseEntity<>(new ClientAddResponse("Client Detail Updated",clientRepo.save(clientDetail)),HttpStatus.OK);
+			    String password=passwordEncoder.encode(clientDetail.getPassword());
+			    clientDetail.setPassword(password);
+			    clientDetail.setCpassword(null);
+			    return new ResponseEntity<>(new ClientAddResponse("Client Detail Updated",clientRepo.save(clientDetail)),HttpStatus.OK);
+			}
+			else
+				 return new ResponseEntity<>(new ClientAddResponse("Password And Confirm Password Not Same!"),HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -67,4 +98,14 @@ public class ClientService {
 		else
 			return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
 		}
+
+//    SHOW CLIENT'S CANDIDATE DETAIL	
+	public ArrayList<ListOfCandidate> viewClientCandidateList(String clientId) {
+		List<CandidateDetail> candidateList=candidateRepo.findByClientId(clientId);
+		ArrayList<ListOfCandidate> returnCandidateList=new ArrayList<ListOfCandidate>();
+		for(CandidateDetail ob:candidateList)
+			returnCandidateList.add(new ListOfCandidate(ob.getId(),ob.getFirstName(),ob.getEmail()
+					,ob.getPhone(),ob.getSkill(),ob.getJob()));
+		return returnCandidateList;
+	}
 	}

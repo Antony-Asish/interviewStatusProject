@@ -3,7 +3,6 @@ package com.example.demo.Controller;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.Service.ClientService;
 import com.example.demo.model.ClientDetail;
 import com.example.demo.model.RestModel.ClientAddResponse;
+import com.example.demo.model.RestModel.DashBoardReturn;
+import com.example.demo.model.RestModel.ListOfCandidate;
 import com.example.demo.model.RestModel.ResponseModel;
 import com.example.demo.model.RestModel.ShowClientList;
 
@@ -34,6 +35,13 @@ public class ClientController {
 		return clientService.clientList(page);
 	}
 	
+//  SHOW CLIENT DASHBOARD DETAIL
+	@GetMapping("client/{id}/dashBoard")
+	public ArrayList<DashBoardReturn> clientDashBoard(@PathVariable("id") String clientId)
+	{
+		return clientService.clientDashBoard(clientId);
+	}
+	
 //  NEW CLIENT ADDING AND UPDATING
 	@PostMapping("client")
 	public ResponseEntity<ClientAddResponse> clientAdding(@RequestBody ClientDetail clientDetail)
@@ -46,5 +54,12 @@ public class ClientController {
 	public ResponseEntity<ResponseModel> clientDeleted(@PathVariable("id") String id)
 	{
 		return clientService.clientDeleted(id);
+	}
+	
+//  SHOW CLIENT'S CANDIDATE DETAIL
+	@GetMapping("client/{id}")
+	public ArrayList<ListOfCandidate> viewClientCandidateList(@PathVariable("id") String clientId)
+	{
+		return clientService.viewClientCandidateList(clientId);
 	}
 }

@@ -18,4 +18,6 @@ public interface ClientRepository extends MongoRepository<ClientDetail,String> {
 
 	boolean existsByPhoneAndIdIsNot(Long phone, String id);
 
+	ClientDetail findByUserName(String userName);
+
 }

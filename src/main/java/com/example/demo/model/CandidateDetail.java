@@ -22,6 +22,7 @@ public class CandidateDetail {
 	private Date dob;
 	private String gender;
 	private String linkedIn;
+	private String clientId;
 	private ArrayList<Education_Detail> qualification;
 	private Company[] company;
 	private ArrayList<String> skill;
@@ -42,6 +43,12 @@ public class CandidateDetail {
 	}
 	public void setJob(String job) {
 		this.job = job;
+	}
+	public String getClientId() {
+		return clientId;
+	}
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
 	}
 	public ArrayList<Education_Detail> getQualification() {
 		return qualification;
