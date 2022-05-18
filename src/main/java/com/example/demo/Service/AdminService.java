@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.model.CandidateDetail;
 import com.example.demo.model.EmployeeDetail;
+import com.example.demo.model.RestModel.CandidateCount;
 import com.example.demo.model.RestModel.ClientCandidate;
 import com.example.demo.model.RestModel.ListOfEmployee;
 import com.example.demo.model.RestModel.ResponseAddCandidate;
@@ -42,6 +43,25 @@ public class AdminService {
 			}
 		}
 	    return employeeList;
+	}
+	
+	// SHOW PANEL LIST COUNT
+	public CandidateCount panelCount() {
+		int count=0;
+		List<EmployeeDetail> DBemployeeList=employeeRepo.findAll();
+		for(EmployeeDetail employeeDetail : DBemployeeList)
+		{
+			if(employeeDetail.getRole() != null)
+			for(String role : employeeDetail.getRole())
+			{
+				if(role.equals("panel"))
+				{
+					count++;
+				}
+			}
+		}
+		CandidateCount ob1=new CandidateCount(count);
+		return ob1;
 	}
 	
 	//  ASSIGN SOME CANDIDATE TO CLIENT

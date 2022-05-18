@@ -51,63 +51,60 @@ public class EmployeeService {
 		
 //  DISPLAY EMPLOYEE LIST DETAIL BY PAGE
   public ArrayList<ListOfEmployee> employeeList(Pageable page) {
-     Page<EmployeeDetail> employeeList=employeeRepo.findAll(page);
-     ArrayList<ListOfEmployee> pageByEmployeeList=new ArrayList<ListOfEmployee>();
-     for(EmployeeDetail ob:employeeList)
-         pageByEmployeeList.add(new ListOfEmployee(ob.getId(),ob.getFirstName(),ob.getEmail(),ob.getDepartment(),ob.getRole()));
-     return pageByEmployeeList;
-}
+       Page<EmployeeDetail> employeeList=employeeRepo.findAll(page);
+       ArrayList<ListOfEmployee> pageByEmployeeList=new ArrayList<ListOfEmployee>();
+       for(EmployeeDetail ob:employeeList)
+           pageByEmployeeList.add(new ListOfEmployee(ob.getId(),ob.getFirstName(),ob.getEmail(),ob.getDepartment(),ob.getRole()));
+      return pageByEmployeeList;
+   }
 
-//  EMPLOYEE ADDING AND UPDATING
-public ResponseEntity<ResponseAddEmployee> addemployee(EmployeeDetail employeeDetail) {
-if(employeeDetail.getId() != null)
-{
-  if(employeeDetail.getPassword().equals(employeeDetail.getCpassword()))
-	{
-	if(employeeRepo.existsByEmailAndIdIsNot(employeeDetail.getEmail(),employeeDetail.getId()))
-		return new ResponseEntity<>(new ResponseAddEmployee("Email Already exists!"),HttpStatus.BAD_REQUEST);
-	if(employeeRepo.existsByPhoneAndIdIsNot(employeeDetail.getPhone(),employeeDetail.getId()))
-		return new ResponseEntity<>(new ResponseAddEmployee("Phone Number Already exists!"),HttpStatus.BAD_REQUEST);
-	BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
-	String password=passwordEncoder.encode(employeeDetail.getPassword());
-	employeeDetail.setPassword(password);
-	employeeDetail.setCpassword(null);
-	return new ResponseEntity<>(new ResponseAddEmployee("Employee Detail Update Successfully",employeeRepo.save(employeeDetail)),HttpStatus.OK);
-	}
+   //  EMPLOYEE ADDING AND UPDATING
+   public ResponseEntity<ResponseAddEmployee> addemployee(EmployeeDetail employeeDetail) {
+     if(employeeDetail.getId() != null)
+     {
+         if(employeeDetail.getPassword().equals(employeeDetail.getCpassword()))
+	     {
+	        if(employeeRepo.existsByEmailAndIdIsNot(employeeDetail.getEmail(),employeeDetail.getId()))
+		       return new ResponseEntity<>(new ResponseAddEmployee("Email Already exists!"),HttpStatus.BAD_REQUEST);
+	        if(employeeRepo.existsByPhoneAndIdIsNot(employeeDetail.getPhone(),employeeDetail.getId()))
+		       return new ResponseEntity<>(new ResponseAddEmployee("Phone Number Already exists!"),HttpStatus.BAD_REQUEST);
+        	BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+	        String password=passwordEncoder.encode(employeeDetail.getPassword());
+	        employeeDetail.setPassword(password);
+	        employeeDetail.setCpassword(null);
+	        return new ResponseEntity<>(new ResponseAddEmployee("Employee Detail Update Successfully",employeeRepo.save(employeeDetail)),HttpStatus.OK);
+	     }
 	return new ResponseEntity<>(new ResponseAddEmployee("Password And ConfirmPassword not same"),HttpStatus.BAD_REQUEST);
-}
-else
-{
-   if(employeeRepo.existsByEmail(employeeDetail.getEmail()))
-	 return new ResponseEntity<>(new ResponseAddEmployee("Email Already exists!"),HttpStatus.BAD_REQUEST);
-   if(employeeRepo.existsByPhone(employeeDetail.getPhone()))
-	 return new ResponseEntity<>(new ResponseAddEmployee("Phone Number Already exists!"),HttpStatus.BAD_REQUEST);
-do
-{
-rand = random.nextInt(10000);
-employeeDetail.setUserName(employeeDetail.getFirstName()+rand+"@icanio");
-}while(employeeRepo.existsByUserName(employeeDetail.getUserName()));
-}
-BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
-String password = passwordEncoder.encode(employeeDetail.getFirstName()+rand+"@icanio");
-employeeDetail.setPassword(password);
-return new ResponseEntity<>(new ResponseAddEmployee("New Employee's UserId is "+employeeDetail.getUserName(),employeeRepo.insert(employeeDetail)),HttpStatus.OK);
-}
+    }
+    else
+    {
+        if(employeeRepo.existsByUserName(employeeDetail.getUserName()))
+	         return new ResponseEntity<>(new ResponseAddEmployee("UserName exists!"),HttpStatus.BAD_REQUEST);
+        if(employeeRepo.existsByEmail(employeeDetail.getEmail()))
+	         return new ResponseEntity<>(new ResponseAddEmployee("Email Already exists!"),HttpStatus.BAD_REQUEST);
+        if(employeeRepo.existsByPhone(employeeDetail.getPhone()))
+	         return new ResponseEntity<>(new ResponseAddEmployee("Phone Number Already exists!"),HttpStatus.BAD_REQUEST);
+    }
+    BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
+    String password = passwordEncoder.encode(employeeDetail.getUserName());
+    employeeDetail.setPassword(password);
+    return new ResponseEntity<>(new ResponseAddEmployee("New EmployeeDetail was Created",employeeRepo.insert(employeeDetail)),HttpStatus.OK);
+    }
 
-//   VIEW EMPLOYEE FULL DETAIL
-public EmployeeDetail viewEmployeeDetail(String id) {
-return employeeRepo.findById(id).get();
-}
+    //   VIEW EMPLOYEE FULL DETAIL
+    public EmployeeDetail viewEmployeeDetail(String id) {
+        return employeeRepo.findById(id).get();
+    }
 
-//   DELETE EMPLOYEE DETAIL
-public ResponseEntity<ResponseModel> deleteEmployee(String id) {
-if(employeeRepo.existsById(id))
-{
-   employeeRepo.deleteById(id);
-   return new ResponseEntity<>(new ResponseModel("Employee Detail Deleted Successfully"),HttpStatus.OK);
-}
-else
-   return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
-}
+    //   DELETE EMPLOYEE DETAIL
+    public ResponseEntity<ResponseModel> deleteEmployee(String id) {
+      if(employeeRepo.existsById(id))
+      {
+        employeeRepo.deleteById(id);
+        return new ResponseEntity<>(new ResponseModel("Employee Detail Deleted Successfully"),HttpStatus.OK);
+      }
+      else
+        return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
+   }
 
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Service.AdminService;
+import com.example.demo.model.RestModel.CandidateCount;
 import com.example.demo.model.RestModel.ClientCandidate;
 import com.example.demo.model.RestModel.ListOfEmployee;
 import com.example.demo.model.RestModel.ResponseAddCandidate;
@@ -27,6 +28,13 @@ public class AdminController {
 	public ArrayList<ListOfEmployee> panelList()
 	{
 		return adminService.panelList();
+	}
+	
+    //  SHOW PANEL LIST COUNT
+	@GetMapping("panelCount")
+	public CandidateCount panelCount()
+	{
+		return adminService.panelCount();
 	}
 	
 	//  ADMIN ASSIGN SOME CANDIDATE TO 
