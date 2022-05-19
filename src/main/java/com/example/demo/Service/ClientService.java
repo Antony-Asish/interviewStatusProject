@@ -104,8 +104,8 @@ public class ClientService {
 		List<CandidateDetail> candidateList=candidateRepo.findByClientId(clientId);
 		ArrayList<ListOfCandidate> returnCandidateList=new ArrayList<ListOfCandidate>();
 		for(CandidateDetail ob:candidateList)
-			returnCandidateList.add(new ListOfCandidate(ob.getId(),ob.getFirstName(),ob.getEmail()
-					,ob.getPhone(),ob.getSkill(),ob.getJob()));
+			returnCandidateList.add(new ListOfCandidate(ob.getId(),ob.getFirstName(),
+					ob.getStatus(),ob.getPhone(),ob.getJob()));
 		return returnCandidateList;
 	}
 	}

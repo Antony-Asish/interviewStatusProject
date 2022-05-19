@@ -8,8 +8,6 @@ import com.example.demo.model.CandidateDetail;
 
 public interface CandidateRepository extends MongoRepository<CandidateDetail,String> {
 
-	CandidateDetail findByUserName(String userName);
-
 	boolean existsByEmail(String email);
 		
 	boolean existsByPhone(Long phone);

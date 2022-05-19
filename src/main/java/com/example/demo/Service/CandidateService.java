@@ -28,8 +28,8 @@ public class CandidateService {
 		Page<CandidateDetail> allCandidateList=candidateRepo.findAll(page);
 		ArrayList<ListOfCandidate> pageByCandidateList=new ArrayList<ListOfCandidate>();
 		for(CandidateDetail ob:allCandidateList)
-			pageByCandidateList.add(new ListOfCandidate(ob.getId(),ob.getFirstName(),ob.getEmail()
-					,ob.getPhone(),ob.getSkill(),ob.getJob()));
+			pageByCandidateList.add(new ListOfCandidate(ob.getId(),ob.getFirstName(),ob.getStatus()
+					,ob.getPhone(),ob.getJob()));
 		return pageByCandidateList;
 	}
 	

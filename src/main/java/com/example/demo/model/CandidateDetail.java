@@ -17,7 +17,7 @@ public class CandidateDetail {
 	private String id;
 	private String firstName;
 	private String lastName;
-	private String userName;
+
 	private String email;
 	private Date dob;
 	private String gender;
@@ -92,12 +92,6 @@ public class CandidateDetail {
 	}
 	public void setId(String id) {
 		this.id = id;
-	}
-	public String getUserName() {
-		return userName;
-	}
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 	public String getEmail() {
 		return email;
