@@ -31,4 +31,10 @@ public class address {
 		this.pincode = pincode;
 	}
 	
+	@Override
+	public String toString() {
+		String address="DoorNo : "+this.doorNo+", Street : "+this.street
+        +", Place : "+this.place+", Pincode : "+this.pincode;
+		return address;
+	}
 }

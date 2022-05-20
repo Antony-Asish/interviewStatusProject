@@ -17,14 +17,13 @@ public class CandidateDetail {
 	private String id;
 	private String firstName;
 	private String lastName;
-
 	private String email;
 	private Date dob;
 	private String gender;
 	private String linkedIn;
 	private String clientId;
 	private ArrayList<Education_Detail> qualification;
-	private Company[] company;
+	private ArrayList<Company> company;
 	private ArrayList<String> skill;
 	private String status;
 	private Long phone;
@@ -62,10 +61,11 @@ public class CandidateDetail {
 	public void setSkill(ArrayList<String> skill) {
 		this.skill = skill;
 	}
-	public Company[] getCompany() {
+	
+	public ArrayList<Company> getCompany() {
 		return company;
 	}
-	public void setCompany(Company[] company) {
+	public void setCompany(ArrayList<Company> company) {
 		this.company = company;
 	}
 	public String getFirstName() {

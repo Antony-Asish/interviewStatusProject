@@ -26,7 +26,7 @@ public class AdminService {
 	@Autowired
 	private CandidateRepository candidateRepo;
 	
-	//  SHOW PANEL LIST USING PAGINATION
+	//  SHOW PANEL LIST USING 
 	public ArrayList<ListOfEmployee> panelList() {
 		ArrayList<ListOfEmployee> employeeList=new ArrayList<ListOfEmployee>();
 		List<EmployeeDetail> DBemployeeList=employeeRepo.findAll();
@@ -45,7 +45,7 @@ public class AdminService {
 	    return employeeList;
 	}
 	
-	// SHOW PANEL LIST COUNT
+	//     SHOW PANEL LIST COUNT
 	public CandidateCount panelCount() {
 		int count=0;
 		List<EmployeeDetail> DBemployeeList=employeeRepo.findAll();

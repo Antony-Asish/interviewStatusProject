@@ -1,6 +1,7 @@
 package com.example.demo.Controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,8 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.Service.ExcelService;
 import com.example.demo.model.CandidateDetail;
 import com.example.demo.model.ClientDetail;
+import com.example.demo.model.EmployeeDetail;
+import com.example.demo.model.RestModel.ListOfEmployee;
 import com.example.demo.repository.CandidateRepository;
 import com.example.demo.repository.ClientRepository;
+import com.example.demo.repository.EmployeeRepository;
 
 @RestController
 @CrossOrigin
@@ -28,6 +32,9 @@ public class ExcelController {
 		
 	@Autowired
 	private ClientRepository clientRepo;
+	
+	@Autowired
+	private EmployeeRepository employeeRepo;
 	
 	//   GIVE LIST OF DETAIL BY PAGE 
 	@GetMapping("/candidate")
@@ -69,6 +76,42 @@ public class ExcelController {
 		ExcelService excelExporter=new ExcelService();
 		excelExporter.assignClientList(listOfClient);
 		excelExporter.clientReport(response);
+	}
+	
+    //     GET EMPLOYEE DETAIL REPORT
+	@GetMapping("/employee")
+	public void employeeReport(HttpServletResponse response) throws IOException
+	{
+		response.setContentType("application/octet-stream");
+		String headerKey = "Content-Disposition";
+		String headerValue = "attachment;filename=Employee_Details.xlsx";
+		response.setHeader(headerKey, headerValue);
+		List<EmployeeDetail> listOfemployee=employeeRepo.findAll();
+		ExcelService excelExporter=new ExcelService();
+		excelExporter.assignEmployeeList(listOfemployee);
+		excelExporter.employeeReport(response);
+	}
+	
+    //   GET PANEL DETAIL REPORT
+	@GetMapping("/panel")
+	public void panelReport(HttpServletResponse response) throws IOException
+	{
+		response.setContentType("application/octet-stream");
+		String headerKey = "Content-Disposition";
+		String headerValue = "attachment;filename=Panel_Details.xlsx";
+		response.setHeader(headerKey, headerValue);
+		ArrayList<ListOfEmployee> listOfPanel=new ArrayList<ListOfEmployee>();
+		List<EmployeeDetail> DBemployeeList=employeeRepo.findAll();
+		for(EmployeeDetail employeeDetail : DBemployeeList)
+			if(employeeDetail.getRole() != null)
+			   for(String role : employeeDetail.getRole())
+				  if(role.equals("panel"))
+					    listOfPanel.add(new ListOfEmployee(employeeDetail.getFirstName(),employeeDetail.getLastName(),
+							  employeeDetail.getEmail(),employeeDetail.getDepartment(),employeeDetail.getGender(),
+							  employeeDetail.getLinkedIn(),employeeDetail.getPhone()));
+		ExcelService excelExporter=new ExcelService();
+		excelExporter.assignPanelList(listOfPanel);
+		excelExporter.panelReport(response);
 	}
 	
 }

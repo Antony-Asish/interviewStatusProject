@@ -1,6 +1,8 @@
 package com.example.demo.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -17,6 +19,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.example.demo.model.CandidateDetail;
 import com.example.demo.model.ClientDetail;
+import com.example.demo.model.EmployeeDetail;
+import com.example.demo.model.RestModel.ListOfEmployee;
+import com.example.demo.model.RestModel.address;
 
 public class ExcelService {
 	
@@ -24,21 +29,37 @@ public class ExcelService {
 	private XSSFSheet sheet;
 	private List<CandidateDetail> listOfCandidate;
 	private List<ClientDetail> listOfClient;
-	
+	private List<EmployeeDetail> listOfEmployee;
+	private ArrayList<ListOfEmployee> listOfPanel;
 	
 	public ExcelService() {
 		super();
 	}
 
+	//   ASSIGN LISTOFCANDIDATE DATA
 	public ExcelService(List<CandidateDetail> listOfCandidate)
 	{
 		this.listOfCandidate=listOfCandidate;
 		workBook=new XSSFWorkbook();	
 	}
 	
+    //  ASSIGN LISTOFCLIENT DATA
 	public void assignClientList(List<ClientDetail> listOfClient)
 	{
 		this.listOfClient=listOfClient;
+		workBook=new XSSFWorkbook();	
+	}
+	
+    //  ASSIGN LISTOFEMPLOYEE DATA
+	public void assignEmployeeList(List<EmployeeDetail> listOfEmployee)
+	{
+		this.listOfEmployee=listOfEmployee;
+		workBook=new XSSFWorkbook();	
+	}
+	
+   //  ASSIGN LISTOFPANEL DATA
+	public void assignPanelList(ArrayList<ListOfEmployee> listOfPanel) {
+		this.listOfPanel=listOfPanel;
 		workBook=new XSSFWorkbook();	
 	}
 	
@@ -62,6 +83,10 @@ public class ExcelService {
 		if(value instanceof Long)
 		{
 			cell.setCellValue((Long) value);
+		}
+		else if(value instanceof Date)
+		{
+			cell.setCellValue((Date) value);
 		}
 		else if(value instanceof Integer)
 		{
@@ -89,7 +114,7 @@ public class ExcelService {
 		style.setFont(font);
 		style.setAlignment(HorizontalAlignment.CENTER);
 		createCell(row,0,"Candidate Detail",style);
-		sheet.addMergedRegion(new CellRangeAddress(0,0,0,6));
+		sheet.addMergedRegion(new CellRangeAddress(0,0,0,11));
 		font.setFontHeightInPoints((short)(10));
 		
 		row=sheet.createRow(1);
@@ -99,10 +124,15 @@ public class ExcelService {
 		createCell(row,0,"FirstName",style);
 		createCell(row,1,"LastName",style);
 		createCell(row,2,"Applied Job",style);
-		createCell(row,3,"Status",style);
-		createCell(row,4,"Email",style);
-		createCell(row,5,"Phone",style);
-		createCell(row,6,"linkedIn",style);
+		createCell(row,3,"DOB",style);
+		createCell(row,4,"Status",style);
+		createCell(row,5,"Skill",style);
+		createCell(row,6,"Company",style);
+		createCell(row,7,"Qualification",style);
+		createCell(row,8,"Email",style);
+		createCell(row,9,"Phone",style);
+		createCell(row,10,"linkedIn",style);
+		createCell(row,11,"Address",style);	
 	}
 	
 	//    BODY DATA LINES WRITING
@@ -121,10 +151,18 @@ public class ExcelService {
 			 createCell(row,columnCount++,candidate.getFirstName(),style);
 			 createCell(row,columnCount++,candidate.getLastName(),style);
 			 createCell(row,columnCount++,candidate.getJob(),style);
+			 if(candidate.getDob() != null)
+			     createCell(row,columnCount++,candidate.getDob().toString(),style);
+			 else
+				 createCell(row,columnCount++,"",style);
 			 createCell(row,columnCount++,candidate.getStatus(),style);
+			 createCell(row,columnCount++,candidate.getSkill().toString(),style);
+			 createCell(row,columnCount++,candidate.getCompany().toString(),style);
+			 createCell(row,columnCount++,candidate.getQualification().toString(),style);;
 			 createCell(row,columnCount++,candidate.getEmail(),style);
 			 createCell(row,columnCount++,candidate.getPhone(),style);
 			 createCell(row,columnCount++,candidate.getLinkedIn(),style);
+			 createCell(row,columnCount++,candidate.getAddress().toString(),style);
 		 }
 	}
 	
@@ -163,7 +201,7 @@ public class ExcelService {
 		style.setFont(font);
 		style.setAlignment(HorizontalAlignment.CENTER);
 		createCell(row,0,"Candidate Detail",style);
-		sheet.addMergedRegion(new CellRangeAddress(0,0,0,4));
+		sheet.addMergedRegion(new CellRangeAddress(0,0,0,3));
 		font.setFontHeightInPoints((short)(10));
 		
 		row=sheet.createRow(1);
@@ -195,5 +233,125 @@ public class ExcelService {
 			 createCell(row,columnCount++,client.getPhone(),style);
 		 }
 	}
+
+	//  GET EMPLOYEE DETAIL REPORT
+	public void employeeReport(HttpServletResponse response) throws IOException {
+		writeHeaderLineForEmployee();
+		writeDataLinesForEmployee();
+		
+		ServletOutputStream servletOutPutStream=response.getOutputStream();
+		workBook.write(servletOutPutStream);
+		workBook.close();
+		servletOutPutStream.close();
+	}
+
+    //  HEADER LINES WRITING FOR CLIENT DETAIL
+	private void writeHeaderLineForEmployee() {
+		sheet=workBook.createSheet("Employee_Detail");
+		Row row=sheet.createRow(0);
+		CellStyle style=workBook.createCellStyle();
+		XSSFFont font=workBook.createFont();
+		font.setBold(true);
+		font.setFontHeight(20);
+		style.setFont(font);
+		style.setAlignment(HorizontalAlignment.CENTER);
+		createCell(row,0,"Employee Detail",style);
+		sheet.addMergedRegion(new CellRangeAddress(0,0,0,6));
+		font.setFontHeightInPoints((short)(10));
+		
+		row=sheet.createRow(1);
+		font.setBold(true);
+		font.setFontHeight(16);
+		style.setFont(font);
+		createCell(row,0,"FirstName",style);
+		createCell(row,1,"LastName",style);
+		createCell(row,2,"Gender",style);
+		createCell(row,3,"Linked-In",style);
+		createCell(row,4,"Department",style);
+		createCell(row,5,"Email",style);
+		createCell(row,6,"Phone",style);
+	}
 	
+	//   BODY DATA LINES WRITING FOR EMPLOYEE DETAIL
+	private void writeDataLinesForEmployee() {
+		 int rowCount=2;
+		 CellStyle style=workBook.createCellStyle();
+		 XSSFFont font=workBook.createFont();
+		 font.setFontHeight(14);
+		 style.setFont(font);
+		 
+		 for(EmployeeDetail employee : listOfEmployee )
+		 {
+			 Row row=sheet.createRow(rowCount++);
+			 int columnCount=0;
+			 createCell(row,columnCount++,employee.getFirstName(),style);
+			 createCell(row,columnCount++,employee.getLastName(),style);
+			 createCell(row,columnCount++,employee.getGender(),style);
+			 createCell(row,columnCount++,employee.getLinkedIn(),style);
+			 createCell(row,columnCount++,employee.getDepartment(),style);
+			 createCell(row,columnCount++,employee.getEmail(),style);
+			 createCell(row,columnCount++,employee.getPhone(),style);
+		 }
+	}
+
+    //   GET EMPLOYEE DETAIL REPORT
+	public void panelReport(HttpServletResponse response) throws IOException {
+		writeHeaderLinesForPanel();
+		writeDataLinesForPanel();
+		
+		ServletOutputStream servletOutPutStream=response.getOutputStream();
+		workBook.write(servletOutPutStream);
+		workBook.close();
+		servletOutPutStream.close();
+	}
+
+    //   HEADER LINES WRITING FOR PANEL DETAIL
+	private void writeHeaderLinesForPanel() {
+		sheet=workBook.createSheet("Panel_Detail");
+		Row row=sheet.createRow(0);
+		CellStyle style=workBook.createCellStyle();
+		XSSFFont font=workBook.createFont();
+		font.setBold(true);
+		font.setFontHeight(20);
+		style.setFont(font);
+		style.setAlignment(HorizontalAlignment.CENTER);
+		createCell(row,0,"Panel Detail",style);
+		sheet.addMergedRegion(new CellRangeAddress(0,0,0,6));
+		font.setFontHeightInPoints((short)(10));
+		
+		row=sheet.createRow(1);
+		font.setBold(true);
+		font.setFontHeight(16);
+		style.setFont(font);
+		createCell(row,0,"FirstName",style);
+		createCell(row,1,"LastName",style);
+		createCell(row,2,"Gender",style);
+		createCell(row,3,"Linked-In",style);
+		createCell(row,4,"Department",style);
+		createCell(row,5,"Email",style);
+		createCell(row,6,"Phone",style);
+		
+	}
+
+    //   BODY DATA LINES WRITING FOR CLIENT DETAIL
+	private void writeDataLinesForPanel() {
+		 int rowCount=2;
+		 CellStyle style=workBook.createCellStyle();
+		 XSSFFont font=workBook.createFont();
+		 font.setFontHeight(14);
+		 style.setFont(font);
+		 
+		 for(ListOfEmployee listOfPanel: listOfPanel )
+		 {
+			 Row row=sheet.createRow(rowCount++);
+			 int columnCount=0;
+			 createCell(row,columnCount++,listOfPanel.getFirstName(),style);
+			 createCell(row,columnCount++,listOfPanel.getLastName(),style);
+			 createCell(row,columnCount++,listOfPanel.getGender(),style);
+			 createCell(row,columnCount++,listOfPanel.getLinkedIn(),style);
+			 createCell(row,columnCount++,listOfPanel.getDepartment(),style);
+			 createCell(row,columnCount++,listOfPanel.getEmail(),style);
+			 createCell(row,columnCount++,listOfPanel.getPhone(),style);
+		 }
+	}
 }

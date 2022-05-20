@@ -31,4 +31,9 @@ public class Company {
 		this.to = to;
 	}
 	
+	@Override
+	public String toString() {
+		return "Name : "+this.name+", From : "+this.from+", To : "+this.from+", Role : "+this.roll;
+	}
+	
 }

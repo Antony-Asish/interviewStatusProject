@@ -16,4 +16,9 @@ public class Education_Detail {
 	public void setDegree(String degree) {
 		this.degree = degree;
 	}
+	
+	@Override
+	public String toString() {
+		return "CollegeName : "+this.collegeName+","+" Degree : "+this.degree;
+	}
 }
