@@ -24,7 +24,7 @@ public class EmployeeDetail {
 	private String linkedIn;
 	private ArrayList<String> role;
 	private ArrayList<Education_Detail> degree;
-	private Company[] company;
+	private ArrayList<Company> company;
 	private ArrayList<String> skill;
 	private String department;
 	private Long phone;
@@ -62,10 +62,10 @@ public class EmployeeDetail {
 	public void setPosition(String position) {
 		this.position = position;
 	}
-	public Company[] getCompany() {
+	public ArrayList<Company> getCompany() {
 		return company;
 	}
-	public void setCompany(Company[] company) {
+	public void setCompany(ArrayList<Company> company) {
 		this.company = company;
 	}
 	public String getFirstName() {

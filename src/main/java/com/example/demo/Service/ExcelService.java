@@ -21,7 +21,6 @@ import com.example.demo.model.CandidateDetail;
 import com.example.demo.model.ClientDetail;
 import com.example.demo.model.EmployeeDetail;
 import com.example.demo.model.RestModel.ListOfEmployee;
-import com.example.demo.model.RestModel.address;
 
 public class ExcelService {
 	
@@ -256,7 +255,7 @@ public class ExcelService {
 		style.setFont(font);
 		style.setAlignment(HorizontalAlignment.CENTER);
 		createCell(row,0,"Employee Detail",style);
-		sheet.addMergedRegion(new CellRangeAddress(0,0,0,6));
+		sheet.addMergedRegion(new CellRangeAddress(0,0,0,12));
 		font.setFontHeightInPoints((short)(10));
 		
 		row=sheet.createRow(1);
@@ -265,11 +264,17 @@ public class ExcelService {
 		style.setFont(font);
 		createCell(row,0,"FirstName",style);
 		createCell(row,1,"LastName",style);
-		createCell(row,2,"Gender",style);
-		createCell(row,3,"Linked-In",style);
-		createCell(row,4,"Department",style);
-		createCell(row,5,"Email",style);
-		createCell(row,6,"Phone",style);
+		createCell(row,2,"UserName",style);
+		createCell(row,3,"DOB",style);
+		createCell(row,4,"Skill",style);
+		createCell(row,5,"Role",style);
+		createCell(row,6,"Department",style);
+		createCell(row,7,"Company",style);
+		createCell(row,8,"Qualification",style);
+		createCell(row,9,"Email",style);
+		createCell(row,10,"Phone",style);
+		createCell(row,11,"linkedIn",style);
+		createCell(row,12,"Address",style);	
 	}
 	
 	//   BODY DATA LINES WRITING FOR EMPLOYEE DETAIL
@@ -286,11 +291,26 @@ public class ExcelService {
 			 int columnCount=0;
 			 createCell(row,columnCount++,employee.getFirstName(),style);
 			 createCell(row,columnCount++,employee.getLastName(),style);
-			 createCell(row,columnCount++,employee.getGender(),style);
-			 createCell(row,columnCount++,employee.getLinkedIn(),style);
-			 createCell(row,columnCount++,employee.getDepartment(),style);
+			 createCell(row,columnCount++,employee.getUserName(),style);
+			 if(employee.getDob() != null)
+			     createCell(row,columnCount++,employee.getDob().toString(),style);
+			 else
+				 createCell(row,columnCount++,"",style);
+			 createCell(row,columnCount++,employee.getSkill().toString(),style);
+			 if(employee.getRole() != null)
+				 createCell(row,columnCount++,employee.getRole().toString(),style);
+			 else
+				 createCell(row,columnCount++,"",style);
+			 createCell(row,columnCount++,employee.getDepartment().toString(),style);
+			 createCell(row,columnCount++,employee.getCompany().toString(),style);
+			 if(employee.getDegree() != null)
+				 createCell(row,columnCount++,employee.getDegree().toString(),style);
+			 else
+				 createCell(row,columnCount++,"",style);
 			 createCell(row,columnCount++,employee.getEmail(),style);
 			 createCell(row,columnCount++,employee.getPhone(),style);
+			 createCell(row,columnCount++,employee.getLinkedIn(),style);
+			 createCell(row,columnCount++,employee.getAddress().toString(),style);
 		 }
 	}
 
