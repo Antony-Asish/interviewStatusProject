@@ -1,6 +1,13 @@
 package com.example.demo.Controller;
 
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Set;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,4 +50,13 @@ public class AdminController {
 	{
 		return adminService.assignCandidateToClient(clientCandidate);
 	}
+	
+	
+    //  SESSION TRINING
+	@GetMapping("sessionTry")
+	public String sessionTry(HttpServletResponse response)
+	{
+		return adminService.sessionTry(response);
+	}
+	
 }

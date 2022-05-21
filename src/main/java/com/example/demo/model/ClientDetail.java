@@ -15,7 +15,13 @@ public class ClientDetail {
 	private String email;
 	private Long phone;
 	
-	
+	public ClientDetail(String firstName, String lastName, String email, Long phone) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.phone = phone;
+	}
 	public String getId() {
 		return id;
 	}
@@ -63,5 +69,11 @@ public class ClientDetail {
 	}
 	public void setPhone(Long phone) {
 		this.phone = phone;
+	}
+	
+	@Override
+	public String toString() {
+		return "Fname : "+this.firstName+", Lname : "+this.lastName+
+				", email :"+this.email+", phone : "+this.phone;
 	}
 }

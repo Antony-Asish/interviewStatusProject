@@ -1,7 +1,14 @@
 package com.example.demo.Service;
 
+import java.net.CookieHandler;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -74,6 +81,14 @@ public class AdminService {
 			candidateRepo.save(candidateDetail);
 		}
 		return new ResponseEntity<>(new ResponseAddCandidate("CandidateAssign Successfully"),HttpStatus.OK);
+	}
+
+    //    SESSION TRINING
+	public String sessionTry(HttpServletResponse response) {
+		Cookie cookie=new Cookie("Antony","Asish");
+		cookie.setMaxAge(60);
+		response.addCookie(cookie);
+		return "Return Cookie";
 	}
 
 }

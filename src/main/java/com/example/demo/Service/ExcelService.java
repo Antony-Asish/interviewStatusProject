@@ -1,8 +1,11 @@
 package com.example.demo.Service;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -12,6 +15,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -20,7 +25,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.example.demo.model.CandidateDetail;
 import com.example.demo.model.ClientDetail;
 import com.example.demo.model.EmployeeDetail;
-import com.example.demo.model.RestModel.ListOfEmployee;
 
 public class ExcelService {
 	
@@ -29,7 +33,6 @@ public class ExcelService {
 	private List<CandidateDetail> listOfCandidate;
 	private List<ClientDetail> listOfClient;
 	private List<EmployeeDetail> listOfEmployee;
-	private ArrayList<ListOfEmployee> listOfPanel;
 	
 	public ExcelService() {
 		super();
@@ -53,12 +56,6 @@ public class ExcelService {
 	public void assignEmployeeList(List<EmployeeDetail> listOfEmployee)
 	{
 		this.listOfEmployee=listOfEmployee;
-		workBook=new XSSFWorkbook();	
-	}
-	
-   //  ASSIGN LISTOFPANEL DATA
-	public void assignPanelList(ArrayList<ListOfEmployee> listOfPanel) {
-		this.listOfPanel=listOfPanel;
 		workBook=new XSSFWorkbook();	
 	}
 	
@@ -102,7 +99,7 @@ public class ExcelService {
 		cell.setCellStyle(style);
 	}
 	
-	//  HEADER LINES WRITING
+	//  HEADER LINES WRITING FOR CANDIDATE
 	public void writeHeaderLine() {
 		sheet=workBook.createSheet("CandidateDetail");
 		Row row=sheet.createRow(0);
@@ -134,7 +131,7 @@ public class ExcelService {
 		createCell(row,11,"Address",style);	
 	}
 	
-	//    BODY DATA LINES WRITING
+	//    BODY DATA LINES WRITING CANDIDATE
 	private void writeDataLines()
 	{
 		int rowCount=2;
@@ -177,7 +174,7 @@ public class ExcelService {
 		servletOutPutStream.close();
 	}
 	
-    //   GET HIRED CANDIDATE REPORT
+    //   GET CLIENT REPORT
 	public void clientReport(HttpServletResponse response) throws IOException
 	{
 		writeHeaderLineForClient();
@@ -244,7 +241,7 @@ public class ExcelService {
 		servletOutPutStream.close();
 	}
 
-    //  HEADER LINES WRITING FOR CLIENT DETAIL
+    //  HEADER LINES WRITING FOR EMPLOYEE DETAIL
 	private void writeHeaderLineForEmployee() {
 		sheet=workBook.createSheet("Employee_Detail");
 		Row row=sheet.createRow(0);
@@ -255,10 +252,10 @@ public class ExcelService {
 		style.setFont(font);
 		style.setAlignment(HorizontalAlignment.CENTER);
 		createCell(row,0,"Employee Detail",style);
-		sheet.addMergedRegion(new CellRangeAddress(0,0,0,12));
+		sheet.addMergedRegion(new CellRangeAddress(0,1,0,12));
 		font.setFontHeightInPoints((short)(10));
 		
-		row=sheet.createRow(1);
+		row=sheet.createRow(2);
 		font.setBold(true);
 		font.setFontHeight(16);
 		style.setFont(font);
@@ -279,7 +276,7 @@ public class ExcelService {
 	
 	//   BODY DATA LINES WRITING FOR EMPLOYEE DETAIL
 	private void writeDataLinesForEmployee() {
-		 int rowCount=2;
+		 int rowCount=3;
 		 CellStyle style=workBook.createCellStyle();
 		 XSSFFont font=workBook.createFont();
 		 font.setFontHeight(14);
@@ -314,63 +311,59 @@ public class ExcelService {
 		 }
 	}
 
-    //   GET EMPLOYEE DETAIL REPORT
-	public void panelReport(HttpServletResponse response) throws IOException {
-		writeHeaderLinesForPanel();
-		writeDataLinesForPanel();
+	
+	
+             //  THIS IS MY TRAINING PURPOSE NOT PROJECT PROPERTY
+	
+	
+	//   IMPORT DATA FROM EXCEL
+	public List<ClientDetail> importClientDetail() throws IOException {
+		List<ClientDetail> clientList=new ArrayList<ClientDetail>();
+		String filePath="C:\\Users\\aasis\\Downloads\\Client_Details.xlsx";
+		FileInputStream inputStream;
+		String FName="";
+		String LName="";
+		String email="";
+		Long phone=(long) 0;
 		
-		ServletOutputStream servletOutPutStream=response.getOutputStream();
-		workBook.write(servletOutPutStream);
-		workBook.close();
-		servletOutPutStream.close();
-	}
-
-    //   HEADER LINES WRITING FOR PANEL DETAIL
-	private void writeHeaderLinesForPanel() {
-		sheet=workBook.createSheet("Panel_Detail");
-		Row row=sheet.createRow(0);
-		CellStyle style=workBook.createCellStyle();
-		XSSFFont font=workBook.createFont();
-		font.setBold(true);
-		font.setFontHeight(20);
-		style.setFont(font);
-		style.setAlignment(HorizontalAlignment.CENTER);
-		createCell(row,0,"Panel Detail",style);
-		sheet.addMergedRegion(new CellRangeAddress(0,0,0,6));
-		font.setFontHeightInPoints((short)(10));
-		
-		row=sheet.createRow(1);
-		font.setBold(true);
-		font.setFontHeight(16);
-		style.setFont(font);
-		createCell(row,0,"FirstName",style);
-		createCell(row,1,"LastName",style);
-		createCell(row,2,"Gender",style);
-		createCell(row,3,"Linked-In",style);
-		createCell(row,4,"Department",style);
-		createCell(row,5,"Email",style);
-		createCell(row,6,"Phone",style);
-		
-	}
-
-    //   BODY DATA LINES WRITING FOR CLIENT DETAIL
-	private void writeDataLinesForPanel() {
-		 int rowCount=2;
-		 CellStyle style=workBook.createCellStyle();
-		 XSSFFont font=workBook.createFont();
-		 font.setFontHeight(14);
-		 style.setFont(font);
-		 
-		 for(ListOfEmployee listOfPanel: listOfPanel )
-		 {
-			 Row row=sheet.createRow(rowCount++);
-			 int columnCount=0;
-			 createCell(row,columnCount++,listOfPanel.getFirstName(),style);
-			 createCell(row,columnCount++,listOfPanel.getLastName(),style);
-			 createCell(row,columnCount++,listOfPanel.getLinkedIn(),style);
-			 createCell(row,columnCount++,listOfPanel.getDepartment(),style);
-			 createCell(row,columnCount++,listOfPanel.getEmail(),style);
-			 createCell(row,columnCount++,listOfPanel.getPhone(),style);
-		 }
+		try {
+		    inputStream=new FileInputStream(filePath);
+			Workbook workbook=new XSSFWorkbook(inputStream);
+			Sheet firstSheet=workbook.getSheetAt(0);
+			Iterator<Row> rowIterator = firstSheet.iterator();
+			rowIterator.next();
+			rowIterator.next();
+			while(rowIterator.hasNext())
+			{
+				Row nextRow=rowIterator.next();
+				Iterator<Cell> cellIterator=nextRow.cellIterator();
+				while(cellIterator.hasNext())
+				{
+					Cell nextCell=cellIterator.next();
+					int columnIndex=nextCell.getColumnIndex();
+					switch(columnIndex)
+					{
+					case 0:
+						FName=(String)nextCell.getStringCellValue();
+						break;
+					case 1:
+						LName=(String)nextCell.getStringCellValue();
+						break;
+					case 2:
+						email=(String)nextCell.getStringCellValue();
+						break;
+					case 3:
+						phone=(long)nextCell.getNumericCellValue(); 
+						break;
+					}
+				}
+				clientList.add(new ClientDetail(FName,LName,email,phone));
+			}
+		    } 
+		catch (FileNotFoundException e) {
+			System.out.println("FileNotFound");
+			e.printStackTrace();
+		}
+		return clientList;
 	}
 }

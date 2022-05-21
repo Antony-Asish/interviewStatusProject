@@ -17,7 +17,6 @@ import com.example.demo.Service.ExcelService;
 import com.example.demo.model.CandidateDetail;
 import com.example.demo.model.ClientDetail;
 import com.example.demo.model.EmployeeDetail;
-import com.example.demo.model.RestModel.ListOfEmployee;
 import com.example.demo.repository.CandidateRepository;
 import com.example.demo.repository.ClientRepository;
 import com.example.demo.repository.EmployeeRepository;
@@ -86,19 +85,18 @@ public class ExcelController {
 		String headerKey = "Content-Disposition";
 		String headerValue = "attachment;filename=Panel_Details.xlsx";
 		response.setHeader(headerKey, headerValue);
-		ArrayList<ListOfEmployee> listOfPanel=new ArrayList<ListOfEmployee>();
+		ArrayList<EmployeeDetail> listOfPanel=new ArrayList<EmployeeDetail>();
 		List<EmployeeDetail> DBemployeeList=employeeRepo.findAll();
 		for(EmployeeDetail employee : DBemployeeList)
 			if(employee.getRole() != null)
 			   for(String role : employee.getRole())
 				  if(role.equals("panel"))
 				  {
-					 listOfPanel.add(new ListOfEmployee(employee.getId(),employee.getFirstName(),employee.getLastName(),
-					  employee.getEmail(),employee.getDepartment(),employee.getLinkedIn(),employee.getPhone(),employee.getRole()));
+					  listOfPanel.add(employee);  
 				  }
 		ExcelService excelExporter=new ExcelService();
-		excelExporter.assignPanelList(listOfPanel);
-		excelExporter.panelReport(response);
+		excelExporter.assignEmployeeList(listOfPanel);
+		excelExporter.employeeReport(response);
 	}
 	
     //     GET CLIENT DETAIL REPORT
@@ -115,7 +113,7 @@ public class ExcelController {
 		excelExporter.clientReport(response);
 	}
 	
-	 //     GET CLIENT DETAIL REPORT
+	    //     GET CLIENT DETAIL REPORT
 		@GetMapping("/client/{id}/{status}")
 		public void clientDashoardStatusReport(@PathVariable("id") String clientId,
 				@PathVariable("status") String status,HttpServletResponse response) throws IOException
@@ -126,7 +124,22 @@ public class ExcelController {
 			response.setHeader(headerKey, headerValue);
 			List<CandidateDetail> listOfCandidate=candidateRepo.findByClientIdAndStatus(clientId,status);
 			ExcelService excelExporter=new ExcelService(listOfCandidate);
+			// WE CAN USE CANDIDATE DETAIL FLOW BECAUSE BOTH ARE SAME
 			excelExporter.hiredCandidateReport(response);
 		}
-	
+		
+		
+		
+		     //     THIS IS MY TRAINING PURPOSE NOT PROJECT PROPERTY
+		
+		//     IMPORT DATA FROM EXCEL
+		@GetMapping("/import")
+		public String importFromExcel() throws IOException
+		{
+			ExcelService excelService=new ExcelService();
+			List<ClientDetail> clientList = excelService.importClientDetail();
+			for(ClientDetail client : clientList)
+			    System.out.println(client);
+			return "import Successfully";
+		}
 }
