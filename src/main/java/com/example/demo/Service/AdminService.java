@@ -38,7 +38,8 @@ public class AdminService {
 				if(role.equals("panel"))
 				{
 					employeeList.add(new ListOfEmployee(employeeDetail.getId(),employeeDetail.getFirstName(),
-							employeeDetail.getEmail(),employeeDetail.getDepartment(),employeeDetail.getRole()));
+							employeeDetail.getLastName(),employeeDetail.getEmail(),employeeDetail.getDepartment(),
+							employeeDetail.getLinkedIn(),employeeDetail.getPhone(),employeeDetail.getRole()));
 				}
 			}
 		}

@@ -18,4 +18,6 @@ public interface EmployeeRepository extends MongoRepository<EmployeeDetail,Strin
 
 	boolean existsByPhoneAndIdIsNot(Long phone, String id);
 
+	boolean existsByUserNameAndIdIsNot(String userName, String id);
+
 }

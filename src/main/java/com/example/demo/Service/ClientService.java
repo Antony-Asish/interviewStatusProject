@@ -34,10 +34,10 @@ public class ClientService {
 	public ArrayList<ShowClientList> clientList(Pageable page) {
 		Page<ClientDetail> clientDetailList=clientRepo.findAll(page);
 		ArrayList<ShowClientList> clientList=new ArrayList<ShowClientList>();
-		for(ClientDetail clientDetail: clientDetailList)
+		for(ClientDetail client: clientDetailList)
 		{
-			clientList.add(new ShowClientList(clientDetail.getId(),clientDetail.getFirstName(),
-					clientDetail.getEmail(),clientDetail.getPhone()));
+			clientList.add(new ShowClientList(client.getId(),client.getFirstName(),
+					client.getEmail(),client.getPhone()));
 		}
 		return clientList;
 	}

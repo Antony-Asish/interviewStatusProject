@@ -54,7 +54,8 @@ public class EmployeeService {
        Page<EmployeeDetail> employeeList=employeeRepo.findAll(page);
        ArrayList<ListOfEmployee> pageByEmployeeList=new ArrayList<ListOfEmployee>();
        for(EmployeeDetail ob:employeeList)
-           pageByEmployeeList.add(new ListOfEmployee(ob.getId(),ob.getFirstName(),ob.getEmail(),ob.getDepartment(),ob.getRole()));
+           pageByEmployeeList.add(new ListOfEmployee(ob.getId(),ob.getFirstName(),ob.getLastName(),ob.getEmail(),
+        		   ob.getDepartment(),ob.getLinkedIn(),ob.getPhone(),ob.getRole()));
       return pageByEmployeeList;
    }
 
@@ -68,6 +69,8 @@ public class EmployeeService {
 		       return new ResponseEntity<>(new ResponseAddEmployee("Email Already exists!"),HttpStatus.BAD_REQUEST);
 	        if(employeeRepo.existsByPhoneAndIdIsNot(employeeDetail.getPhone(),employeeDetail.getId()))
 		       return new ResponseEntity<>(new ResponseAddEmployee("Phone Number Already exists!"),HttpStatus.BAD_REQUEST);
+	        if(employeeRepo.existsByUserNameAndIdIsNot(employeeDetail.getUserName(),employeeDetail.getId()))
+			       return new ResponseEntity<>(new ResponseAddEmployee("UserName Already exists!"),HttpStatus.BAD_REQUEST);
         	BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 	        String password=passwordEncoder.encode(employeeDetail.getPassword());
 	        employeeDetail.setPassword(password);
@@ -79,7 +82,7 @@ public class EmployeeService {
     else
     {
         if(employeeRepo.existsByUserName(employeeDetail.getUserName()))
-	         return new ResponseEntity<>(new ResponseAddEmployee("UserName exists!"),HttpStatus.BAD_REQUEST);
+	         return new ResponseEntity<>(new ResponseAddEmployee("UserName Already exists!"),HttpStatus.BAD_REQUEST);
         if(employeeRepo.existsByEmail(employeeDetail.getEmail()))
 	         return new ResponseEntity<>(new ResponseAddEmployee("Email Already exists!"),HttpStatus.BAD_REQUEST);
         if(employeeRepo.existsByPhone(employeeDetail.getPhone()))

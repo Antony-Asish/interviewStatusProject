@@ -27,4 +27,6 @@ public interface CandidateRepository extends MongoRepository<CandidateDetail,Str
 	int countByStatusAndClientIdIs(String string, String clientId);
 
 	int countByClientId(String clientId);
+
+	List<CandidateDetail> findByClientIdAndStatus(String clientId, String status);
 }

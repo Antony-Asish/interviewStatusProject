@@ -367,7 +367,6 @@ public class ExcelService {
 			 int columnCount=0;
 			 createCell(row,columnCount++,listOfPanel.getFirstName(),style);
 			 createCell(row,columnCount++,listOfPanel.getLastName(),style);
-			 createCell(row,columnCount++,listOfPanel.getGender(),style);
 			 createCell(row,columnCount++,listOfPanel.getLinkedIn(),style);
 			 createCell(row,columnCount++,listOfPanel.getDepartment(),style);
 			 createCell(row,columnCount++,listOfPanel.getEmail(),style);

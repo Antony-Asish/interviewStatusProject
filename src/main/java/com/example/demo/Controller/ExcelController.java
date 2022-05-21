@@ -64,20 +64,6 @@ public class ExcelController {
 		excelExporter.hiredCandidateReport(response);
 	}
 	
-	//   GET CLIENT DETAIL REPORT
-	@GetMapping("/client")
-	public void clientReport(HttpServletResponse response) throws IOException
-	{
-		response.setContentType("application/octet-stream");
-		String headerKey = "Content-Disposition";
-		String headerValue = "attachment;filename=Client_Details.xlsx";
-		response.setHeader(headerKey, headerValue);
-		List<ClientDetail> listOfClient=clientRepo.findAll();
-		ExcelService excelExporter=new ExcelService();
-		excelExporter.assignClientList(listOfClient);
-		excelExporter.clientReport(response);
-	}
-	
     //     GET EMPLOYEE DETAIL REPORT
 	@GetMapping("/employee")
 	public void employeeReport(HttpServletResponse response) throws IOException
@@ -102,16 +88,45 @@ public class ExcelController {
 		response.setHeader(headerKey, headerValue);
 		ArrayList<ListOfEmployee> listOfPanel=new ArrayList<ListOfEmployee>();
 		List<EmployeeDetail> DBemployeeList=employeeRepo.findAll();
-		for(EmployeeDetail employeeDetail : DBemployeeList)
-			if(employeeDetail.getRole() != null)
-			   for(String role : employeeDetail.getRole())
+		for(EmployeeDetail employee : DBemployeeList)
+			if(employee.getRole() != null)
+			   for(String role : employee.getRole())
 				  if(role.equals("panel"))
-					    listOfPanel.add(new ListOfEmployee(employeeDetail.getFirstName(),employeeDetail.getLastName(),
-							  employeeDetail.getEmail(),employeeDetail.getDepartment(),employeeDetail.getGender(),
-							  employeeDetail.getLinkedIn(),employeeDetail.getPhone()));
+				  {
+					 listOfPanel.add(new ListOfEmployee(employee.getId(),employee.getFirstName(),employee.getLastName(),
+					  employee.getEmail(),employee.getDepartment(),employee.getLinkedIn(),employee.getPhone(),employee.getRole()));
+				  }
 		ExcelService excelExporter=new ExcelService();
 		excelExporter.assignPanelList(listOfPanel);
 		excelExporter.panelReport(response);
 	}
+	
+    //     GET CLIENT DETAIL REPORT
+	@GetMapping("/client")
+	public void clientReport(HttpServletResponse response) throws IOException
+	{
+		response.setContentType("application/octet-stream");
+		String headerKey = "Content-Disposition";
+		String headerValue = "attachment;filename=Client_Details.xlsx";
+		response.setHeader(headerKey, headerValue);
+		List<ClientDetail> listOfClient=clientRepo.findAll();
+		ExcelService excelExporter=new ExcelService();
+		excelExporter.assignClientList(listOfClient);
+		excelExporter.clientReport(response);
+	}
+	
+	 //     GET CLIENT DETAIL REPORT
+		@GetMapping("/client/{id}/{status}")
+		public void clientDashoardStatusReport(@PathVariable("id") String clientId,
+				@PathVariable("status") String status,HttpServletResponse response) throws IOException
+		{
+			response.setContentType("application/octet-stream");
+			String headerKey = "Content-Disposition";
+			String headerValue = "attachment;filename=Client_"+status+"_Candidate's_Details.xlsx";
+			response.setHeader(headerKey, headerValue);
+			List<CandidateDetail> listOfCandidate=candidateRepo.findByClientIdAndStatus(clientId,status);
+			ExcelService excelExporter=new ExcelService(listOfCandidate);
+			excelExporter.hiredCandidateReport(response);
+		}
 	
 }
