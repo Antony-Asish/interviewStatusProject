@@ -1,9 +1,14 @@
-package com.example.demo.model.RestModel;
+package com.example.demo.model;
 
 import java.util.ArrayList;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document("Client_Candidate")
 public class ClientCandidate {
 
+	@Id
 	private String clientId;
 	private ArrayList<String> candidateId;
 	

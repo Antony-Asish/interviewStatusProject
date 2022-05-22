@@ -1,27 +1,19 @@
 package com.example.demo.Service;
 
-import java.net.CookieHandler;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.websocket.Session;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.model.CandidateDetail;
+import com.example.demo.model.ClientCandidate;
 import com.example.demo.model.EmployeeDetail;
 import com.example.demo.model.RestModel.CandidateCount;
-import com.example.demo.model.RestModel.ClientCandidate;
 import com.example.demo.model.RestModel.ListOfEmployee;
-import com.example.demo.model.RestModel.ResponseAddCandidate;
-import com.example.demo.repository.CandidateRepository;
+import com.example.demo.repository.ClientCandidateRepository;
 import com.example.demo.repository.EmployeeRepository;
 
 @Service
@@ -31,7 +23,7 @@ public class AdminService {
 	private EmployeeRepository employeeRepo;
 	
 	@Autowired
-	private CandidateRepository candidateRepo;
+	private ClientCandidateRepository clientCandidateRepo;
 	
 	//  SHOW PANEL LIST USING 
 	public ArrayList<ListOfEmployee> panelList() {
@@ -68,19 +60,12 @@ public class AdminService {
 				}
 			}
 		}
-		CandidateCount ob1=new CandidateCount(count);
-		return ob1;
+		return new CandidateCount(count);
 	}
 	
 	//  ASSIGN SOME CANDIDATE TO CLIENT
-	public ResponseEntity<ResponseAddCandidate> assignCandidateToClient(ClientCandidate clientCandidate) {
-		for(String id :clientCandidate.getCandidateId())
-		{
-			CandidateDetail candidateDetail=candidateRepo.findById(id).get();
-			candidateDetail.setClientId(clientCandidate.getClientId());
-			candidateRepo.save(candidateDetail);
-		}
-		return new ResponseEntity<>(new ResponseAddCandidate("CandidateAssign Successfully"),HttpStatus.OK);
+	public ClientCandidate assignCandidateToClient(ClientCandidate clientCandidate) {
+		return clientCandidateRepo.save(clientCandidate);
 	}
 
     //    SESSION TRINING

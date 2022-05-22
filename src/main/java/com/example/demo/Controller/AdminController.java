@@ -1,16 +1,10 @@
 package com.example.demo.Controller;
 
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Set;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.websocket.Session;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,10 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Service.AdminService;
+import com.example.demo.model.ClientCandidate;
 import com.example.demo.model.RestModel.CandidateCount;
-import com.example.demo.model.RestModel.ClientCandidate;
 import com.example.demo.model.RestModel.ListOfEmployee;
-import com.example.demo.model.RestModel.ResponseAddCandidate;
 
 @RestController
 @CrossOrigin
@@ -46,7 +39,7 @@ public class AdminController {
 	
 	//  ADMIN ASSIGN SOME CANDIDATE TO 
 	@PostMapping("clientCandiate")
-	public ResponseEntity<ResponseAddCandidate> assignCandidateToClient(@RequestBody ClientCandidate clientCandidate)
+	public ClientCandidate assignCandidateToClient(@RequestBody ClientCandidate clientCandidate)
 	{
 		return adminService.assignCandidateToClient(clientCandidate);
 	}

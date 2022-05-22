@@ -1,7 +1,6 @@
 package com.example.demo.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.CandidateDetail;
+import com.example.demo.model.ClientCandidate;
 import com.example.demo.model.ClientDetail;
 import com.example.demo.model.RestModel.ClientAddResponse;
 import com.example.demo.model.RestModel.DashBoardReturn;
@@ -19,6 +19,7 @@ import com.example.demo.model.RestModel.ListOfCandidate;
 import com.example.demo.model.RestModel.ResponseModel;
 import com.example.demo.model.RestModel.ShowClientList;
 import com.example.demo.repository.CandidateRepository;
+import com.example.demo.repository.ClientCandidateRepository;
 import com.example.demo.repository.ClientRepository;
 
 @Service
@@ -29,6 +30,9 @@ public class ClientService {
 	
 	@Autowired
 	private CandidateRepository candidateRepo;
+	
+	@Autowired
+	private ClientCandidateRepository clientCandidateRepo;
 	
    //  SHOW CLIENT LIST USING PAGINATION
 	public ArrayList<ShowClientList> clientList(Pageable page) {
@@ -44,12 +48,34 @@ public class ClientService {
 	
 	//   SHOW CLIENT DASHBOARD DETAIL
 	public ArrayList<DashBoardReturn> clientDashBoard(String clientId) {
+		int hired=0,rejected=0,waitingList=0,progress=0,totalCandidate=0;
+		ClientCandidate clientCandidate=clientCandidateRepo.findById(clientId).get();
+		for(String candidateId : clientCandidate.getCandidateId())
+		{
+			CandidateDetail candidate=candidateRepo.findById(candidateId).get();
+			switch(candidate.getStatus())
+			{
+			    case "hired":
+				      hired++;
+				      break;
+			    case "rejected":
+			    	  rejected++;
+				      break;
+			    case "progress":
+				      progress++;
+				      break;
+			    case "waitingList":
+				      waitingList++;
+				      break;
+			}
+			totalCandidate++;
+		}
 		ArrayList<DashBoardReturn> clientDashBoard=new ArrayList<DashBoardReturn>();
-		clientDashBoard.add(new DashBoardReturn("Hired",candidateRepo.countByStatusAndClientIdIs("hired",clientId)));
-		clientDashBoard.add(new DashBoardReturn("Rejected",candidateRepo.countByStatusAndClientIdIs("rejected",clientId)));
-		clientDashBoard.add(new DashBoardReturn("WaitingList",candidateRepo.countByStatusAndClientIdIs("waitingList",clientId)));
-		clientDashBoard.add(new DashBoardReturn("Progress",candidateRepo.countByStatusAndClientIdIs("progress",clientId)));
-		clientDashBoard.add(new DashBoardReturn("TotalCandidate",candidateRepo.countByClientId(clientId)));
+		clientDashBoard.add(new DashBoardReturn("Hired",hired));
+		clientDashBoard.add(new DashBoardReturn("Rejected",rejected));
+		clientDashBoard.add(new DashBoardReturn("WaitingList",waitingList));
+		clientDashBoard.add(new DashBoardReturn("Progress",progress));
+		clientDashBoard.add(new DashBoardReturn("TotalCandidate",totalCandidate));
 		return clientDashBoard;
 	}
 	
@@ -99,13 +125,16 @@ public class ClientService {
 			return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
 		}
 
-//    SHOW CLIENT'S CANDIDATE DETAIL	
+    //    SHOW CLIENT'S CANDIDATE DETAIL	
 	public ArrayList<ListOfCandidate> viewClientCandidateList(String clientId) {
-		List<CandidateDetail> candidateList=candidateRepo.findByClientId(clientId);
+		ClientCandidate clientCandidate=clientCandidateRepo.findById(clientId).get();
 		ArrayList<ListOfCandidate> returnCandidateList=new ArrayList<ListOfCandidate>();
-		for(CandidateDetail ob:candidateList)
-			returnCandidateList.add(new ListOfCandidate(ob.getId(),ob.getFirstName(),
-					ob.getStatus(),ob.getPhone(),ob.getJob()));
+		for(String candidateId : clientCandidate.getCandidateId())
+		{
+			CandidateDetail candidate=candidateRepo.findById(candidateId).get();
+			returnCandidateList.add(new ListOfCandidate(candidate.getId(),candidate.getFirstName(),
+					candidate.getStatus(),candidate.getPhone(),candidate.getJob()));
+		}
 		return returnCandidateList;
 	}
 	}

@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Service.ExcelService;
 import com.example.demo.model.CandidateDetail;
+import com.example.demo.model.ClientCandidate;
 import com.example.demo.model.ClientDetail;
 import com.example.demo.model.EmployeeDetail;
 import com.example.demo.repository.CandidateRepository;
+import com.example.demo.repository.ClientCandidateRepository;
 import com.example.demo.repository.ClientRepository;
 import com.example.demo.repository.EmployeeRepository;
 
@@ -34,6 +36,9 @@ public class ExcelController {
 	
 	@Autowired
 	private EmployeeRepository employeeRepo;
+	
+	@Autowired
+	private ClientCandidateRepository clientCandidateRepo;
 	
 	//   GIVE LIST OF DETAIL BY PAGE 
 	@GetMapping("/candidate")
@@ -120,10 +125,17 @@ public class ExcelController {
 		{
 			response.setContentType("application/octet-stream");
 			String headerKey = "Content-Disposition";
-			String headerValue = "attachment;filename=Client_"+status+"_Candidate's_Details.xlsx";
+			String headerValue = "attachment;filename=Client's_"+status+"_Candidate's_Details.xlsx";
 			response.setHeader(headerKey, headerValue);
-			List<CandidateDetail> listOfCandidate=candidateRepo.findByClientIdAndStatus(clientId,status);
-			ExcelService excelExporter=new ExcelService(listOfCandidate);
+			ClientCandidate clientCandidate=clientCandidateRepo.findById(clientId).get();
+			ArrayList<CandidateDetail> candidateList=new ArrayList<CandidateDetail>();
+			for(String candidateId : clientCandidate.getCandidateId())
+			{
+				CandidateDetail candidate=candidateRepo.findById(candidateId).get();
+				if(candidate.getStatus().equals(status))
+					candidateList.add(candidate);
+			}
+			ExcelService excelExporter=new ExcelService(candidateList);
 			// WE CAN USE CANDIDATE DETAIL FLOW BECAUSE BOTH ARE SAME
 			excelExporter.hiredCandidateReport(response);
 		}
