@@ -3,42 +3,50 @@ package com.example.demo.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.model.ClientCandidate;
 import com.example.demo.model.EmployeeDetail;
 import com.example.demo.model.RestModel.CandidateCount;
 import com.example.demo.model.RestModel.ListOfEmployee;
+import com.example.demo.model.RestModel.ResponseModel;
+import com.example.demo.repository.CandidateRepository;
 import com.example.demo.repository.ClientCandidateRepository;
+import com.example.demo.repository.ClientRepository;
 import com.example.demo.repository.EmployeeRepository;
 
 @Service
 public class AdminService {
+	
+	@Autowired
+	private CandidateRepository candidateRepo;
 
 	@Autowired
 	private EmployeeRepository employeeRepo;
 	
 	@Autowired
+	private ClientRepository clientRepo;
+	
+	@Autowired
 	private ClientCandidateRepository clientCandidateRepo;
 	
-	//  SHOW PANEL LIST USING 
+	//  SHOW PANEL LIST 
 	public ArrayList<ListOfEmployee> panelList() {
 		ArrayList<ListOfEmployee> employeeList=new ArrayList<ListOfEmployee>();
 		List<EmployeeDetail> DBemployeeList=employeeRepo.findAll();
-		for(EmployeeDetail employeeDetail : DBemployeeList)
+		for(EmployeeDetail employee : DBemployeeList)
 		{
-			if(employeeDetail.getRole() != null)
-			for(String role : employeeDetail.getRole())
+			if(employee.getRole() != null)
+			for(String role : employee.getRole())
 			{
 				if(role.equals("panel"))
 				{
-					employeeList.add(new ListOfEmployee(employeeDetail.getId(),employeeDetail.getFirstName(),
-							employeeDetail.getLastName(),employeeDetail.getEmail(),employeeDetail.getDepartment(),
-							employeeDetail.getLinkedIn(),employeeDetail.getPhone(),employeeDetail.getRole()));
+					employeeList.add(new ListOfEmployee(employee.getId(),employee.getFirstName(),
+							employee.getLastName(),employee.getEmail(),employee.getDepartment(),
+							employee.getLinkedIn(),employee.getPhone(),employee.getRole()));
 				}
 			}
 		}
@@ -64,16 +72,22 @@ public class AdminService {
 	}
 	
 	//  ASSIGN SOME CANDIDATE TO CLIENT
-	public ClientCandidate assignCandidateToClient(ClientCandidate clientCandidate) {
-		return clientCandidateRepo.save(clientCandidate);
+	public ResponseEntity<ResponseModel> assignCandidateToClient(ClientCandidate clientCandidate) {
+		if(clientCandidate.getClientId() ==null || clientCandidate.getClientId() == null)
+			return new ResponseEntity<>(new ResponseModel("ClientId and CandidateId Need"),HttpStatus.BAD_REQUEST); 
+		if(clientRepo.existsById(clientCandidate.getClientId()))
+		{
+			for(String candidateId : clientCandidate.getCandidateId())
+			{
+				if(candidateRepo.existsById(candidateId))
+				{}
+				else
+				   return new ResponseEntity<>(new ResponseModel("Candiate Is Not Found"),HttpStatus.BAD_REQUEST); 
+			}
+		}
+		else
+		   return new ResponseEntity<>(new ResponseModel("Client Is Not Found"),HttpStatus.BAD_REQUEST); 
+		clientCandidateRepo.save(clientCandidate);
+		return new ResponseEntity<>(new ResponseModel("Candiate Assign Successfully"),HttpStatus.OK); 		
 	}
-
-    //    SESSION TRINING
-	public String sessionTry(HttpServletResponse response) {
-		Cookie cookie=new Cookie("Antony","Asish");
-		cookie.setMaxAge(60);
-		response.addCookie(cookie);
-		return "Return Cookie";
-	}
-
 }

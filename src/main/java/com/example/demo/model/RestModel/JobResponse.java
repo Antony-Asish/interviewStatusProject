@@ -12,6 +12,9 @@ public class JobResponse {
 		this.msg = msg;
 		this.data = data;
 	}
+	public JobResponse(String msg) {
+		this.msg = msg;
+	}
 	public String getMsg() {
 		return msg;
 	}

@@ -24,37 +24,39 @@ public class AuthenticationService {
 	private ClientRepository clientRepo;
 	
 //     EMPLOYEES LOGIN VALIDATION
-	public ResponseEntity<ResponseModel> employeeLogin(EmployeeDetail employeeDetail) {
+	public ResponseEntity<ResponseModel> employeeLogin(EmployeeDetail employee) {
+		if(employee.getUserName() == null || employee.getPassword() == null || employee.getPosition() == null)
+			return new ResponseEntity<>(new ResponseModel("Fill All Field"),HttpStatus.BAD_REQUEST);
 		BCryptPasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
-		if(employeeDetail.getPosition().equals("client"))
+		if(employee.getPosition().equals("client"))
 		{
-			ClientDetail clientDetail=clientRepo.findByUserName(employeeDetail.getUserName());
+			ClientDetail clientDetail=clientRepo.findByUserName(employee.getUserName());
 			if(clientDetail == null)
 				return new ResponseEntity<>(new ResponseModel("UserName Incorrect"),HttpStatus.UNAUTHORIZED);
-			if(passwordEncoder.matches(employeeDetail.getPassword(),clientDetail.getPassword()))
+			if(passwordEncoder.matches(employee.getPassword(),clientDetail.getPassword()))
 			{
 				ReturnData data=new ReturnData(clientDetail.getId(),clientDetail.getUserName(),clientDetail.getEmail(),
 						clientDetail.getFirstName(),clientDetail.getPhone());
-				return new ResponseEntity<>(new ResponseModel(employeeDetail.getPosition(),data),HttpStatus.OK);
+				return new ResponseEntity<>(new ResponseModel(employee.getPosition(),data),HttpStatus.OK);
 		    }
 			else
 			return new ResponseEntity<>(new ResponseModel("PassWord Incorrect"),HttpStatus.UNAUTHORIZED);
 		}
-		EmployeeDetail DBemployeeDetail=employeeRepo.findByUserName(employeeDetail.getUserName());
+		EmployeeDetail DBemployeeDetail=employeeRepo.findByUserName(employee.getUserName());
 		if(DBemployeeDetail == null)
 			return new ResponseEntity<>(new ResponseModel("UserName Incorrect"),HttpStatus.UNAUTHORIZED);
 		boolean check=true;
 		for(String role : DBemployeeDetail.getRole())
 		{
-		   if(role.equals(employeeDetail.getPosition()))
+		   if(role.equals(employee.getPosition()))
 			 check=false;
 		}
 		if(check)
-			return new ResponseEntity<>(new ResponseModel("You are not "+employeeDetail.getPosition()),HttpStatus.UNAUTHORIZED);
-		if(passwordEncoder.matches(employeeDetail.getPassword(),DBemployeeDetail.getPassword()))
+			return new ResponseEntity<>(new ResponseModel("You are not "+employee.getPosition()),HttpStatus.UNAUTHORIZED);
+		if(passwordEncoder.matches(employee.getPassword(),DBemployeeDetail.getPassword()))
 		{
 			ReturnData data=new ReturnData(DBemployeeDetail.getId(),DBemployeeDetail.getUserName(),DBemployeeDetail.getEmail(),DBemployeeDetail.getFirstName(),DBemployeeDetail.getPhone());
-			return new ResponseEntity<>(new ResponseModel(employeeDetail.getPosition(),data),HttpStatus.OK);
+			return new ResponseEntity<>(new ResponseModel(employee.getPosition(),data),HttpStatus.OK);
 	    }
 		else
 		return new ResponseEntity<>(new ResponseModel("PassWord Incorrect"),HttpStatus.UNAUTHORIZED);

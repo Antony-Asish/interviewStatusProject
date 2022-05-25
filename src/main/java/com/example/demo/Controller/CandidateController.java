@@ -34,14 +34,14 @@ public ArrayList<ListOfCandidate> page(Pageable page)
 	return candidateService.page(page);
 }
 
-//GIVE CANDIDATE COUNT
+//   GIVE CANDIDATE COUNT
 @GetMapping("candidateCount")
 public CandidateCount count()
 {
 return candidateService.countCandidateDetail();
 }
 
-//CANDIDATE STATUS UPDATING
+//   CANDIDATE STATUS UPDATING
 @PostMapping("candidate/{id}/{status}")
 public ResponseEntity<ResponseAddCandidate> candidateStatusUpdate(@PathVariable("status") String status,
 		@PathVariable("id") String id)

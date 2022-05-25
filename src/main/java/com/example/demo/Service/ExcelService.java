@@ -59,19 +59,8 @@ public class ExcelService {
 		workBook=new XSSFWorkbook();	
 	}
 	
-    //    GET ALL CANDIDATE REPORT
-	public void allCandidateReport(HttpServletResponse response) throws IOException
-	{
-		writeHeaderLine();
-		writeDataLines();
-		
-		ServletOutputStream servletOutPutStream=response.getOutputStream();
-		workBook.write(servletOutPutStream);
-		workBook.close();
-		servletOutPutStream.close();
-	}
 	
-	//   CREATE NEW CELL AND PUT VALUE INTO CELL
+    //  CREATE NEW CELL AND PUT VALUE INTO CELL
 	public void createCell(Row row,int columnCount,Object value,CellStyle style)
 	{
 		sheet.autoSizeColumn(columnCount);
@@ -97,6 +86,18 @@ public class ExcelService {
 			cell.setCellValue((String) value);
 		}
 		cell.setCellStyle(style);
+	}
+	
+    //    GET ALL CANDIDATE REPORT
+	public void allCandidateReport(HttpServletResponse response) throws IOException
+	{
+		writeHeaderLine();
+		writeDataLines();
+		
+		ServletOutputStream servletOutPutStream=response.getOutputStream();
+		workBook.write(servletOutPutStream);
+		workBook.close();
+		servletOutPutStream.close();
 	}
 	
 	//  HEADER LINES WRITING FOR CANDIDATE
@@ -359,6 +360,7 @@ public class ExcelService {
 				}
 				clientList.add(new ClientDetail(FName,LName,email,phone));
 			}
+			workbook.close();
 		    } 
 		catch (FileNotFoundException e) {
 			System.out.println("FileNotFound");

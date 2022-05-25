@@ -49,7 +49,7 @@ public class ClientService {
 	//   SHOW CLIENT DASHBOARD DETAIL
 	public ArrayList<DashBoardReturn> clientDashBoard(String clientId) {
 		int hired=0,rejected=0,waitingList=0,progress=0,totalCandidate=0;
-		ClientCandidate clientCandidate=clientCandidateRepo.findById(clientId).get();
+		ClientCandidate clientCandidate=clientCandidateRepo.findById(clientId).get();	
 		for(String candidateId : clientCandidate.getCandidateId())
 		{
 			CandidateDetail candidate=candidateRepo.findById(candidateId).get();
@@ -122,7 +122,7 @@ public class ClientService {
 		  return new ResponseEntity<>(new ResponseModel("Candidate Detail Deleted"),HttpStatus.OK);
 		}
 		else
-			return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new ResponseModel("CandidateId is Wrong"),HttpStatus.BAD_REQUEST);
 		}
 
     //    SHOW CLIENT'S CANDIDATE DETAIL	

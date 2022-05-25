@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 import com.example.demo.model.CandidateDetail;
 import com.example.demo.model.EmployeeDetail;
 import com.example.demo.model.RestModel.DashBoardReturn;
+import com.example.demo.model.RestModel.EmployeeResponse;
 import com.example.demo.model.RestModel.ListOfEmployee;
 import com.example.demo.model.RestModel.ResponseAddEmployee;
-import com.example.demo.model.RestModel.ResponseModel;
 import com.example.demo.repository.CandidateRepository;
 import com.example.demo.repository.EmployeeRepository;
 
@@ -63,6 +63,8 @@ public class EmployeeService {
    public ResponseEntity<ResponseAddEmployee> addemployee(EmployeeDetail employeeDetail) {
      if(employeeDetail.getId() != null)
      {
+       if(employeeRepo.existsById(employeeDetail.getId()))
+       {
          if(employeeDetail.getPassword().equals(employeeDetail.getCpassword()))
 	     {
 	        if(employeeRepo.existsByEmailAndIdIsNot(employeeDetail.getEmail(),employeeDetail.getId()))
@@ -77,7 +79,10 @@ public class EmployeeService {
 	        employeeDetail.setCpassword(null);
 	        return new ResponseEntity<>(new ResponseAddEmployee("Employee Detail Update Successfully",employeeRepo.save(employeeDetail)),HttpStatus.OK);
 	     }
-	return new ResponseEntity<>(new ResponseAddEmployee("Password And ConfirmPassword not same"),HttpStatus.BAD_REQUEST);
+         return new ResponseEntity<>(new ResponseAddEmployee("Password And ConfirmPassword not same"),HttpStatus.BAD_REQUEST);
+       }
+       else
+	     return new ResponseEntity<>(new ResponseAddEmployee("Employee Not Found"),HttpStatus.BAD_REQUEST);
     }
     else
     {
@@ -95,19 +100,25 @@ public class EmployeeService {
     }
 
     //   VIEW EMPLOYEE FULL DETAIL
-    public EmployeeDetail viewEmployeeDetail(String id) {
-        return employeeRepo.findById(id).get();
+    public ResponseEntity<EmployeeResponse> viewEmployeeDetail(String id) {
+     if(employeeRepo.existsById(id))
+     {
+        return new ResponseEntity<>(new EmployeeResponse("Employee Detail was Showing",employeeRepo.findById(id).get()),HttpStatus.OK);
+     }
+     else
+        return new ResponseEntity<>(new EmployeeResponse("EmployeeId is Wrong"),HttpStatus.BAD_REQUEST);
     }
 
     //   DELETE EMPLOYEE DETAIL
-    public ResponseEntity<ResponseModel> deleteEmployee(String id) {
+    public ResponseEntity<EmployeeResponse> deleteEmployee(String id) {
       if(employeeRepo.existsById(id))
       {
         employeeRepo.deleteById(id);
-        return new ResponseEntity<>(new ResponseModel("Employee Detail Deleted Successfully"),HttpStatus.OK);
+        return new ResponseEntity<>(new EmployeeResponse("Employee Detail Deleted Successfully"),HttpStatus.OK);
       }
       else
-        return new ResponseEntity<>(new ResponseModel("Id is Wrong"),HttpStatus.BAD_REQUEST);
-   }
+    	return new ResponseEntity<>(new EmployeeResponse("EmployeeId is Wrong"),HttpStatus.BAD_REQUEST);
+      
+  }
 
 }

@@ -18,9 +18,9 @@ import com.example.demo.Service.EmployeeService;
 import com.example.demo.model.CandidateDetail;
 import com.example.demo.model.EmployeeDetail;
 import com.example.demo.model.RestModel.DashBoardReturn;
+import com.example.demo.model.RestModel.EmployeeResponse;
 import com.example.demo.model.RestModel.ListOfEmployee;
 import com.example.demo.model.RestModel.ResponseAddEmployee;
-import com.example.demo.model.RestModel.ResponseModel;
 
 @RestController
 @CrossOrigin
@@ -58,14 +58,14 @@ return employeeService.employeeList(page);
 
 // VIEW EMPLOYEE FULL DETAIL
 @GetMapping("employee/{id}")
-public EmployeeDetail viewEmployeeDetail(@PathVariable("id") String id)
+public ResponseEntity<EmployeeResponse> viewEmployeeDetail(@PathVariable("id") String id)
 {
 return employeeService.viewEmployeeDetail(id);
 }
 
 // DELETE EMPLOYEE DETAIL
 @DeleteMapping("employee/{id}")
-public ResponseEntity<ResponseModel> deleteEmployee(@PathVariable("id") String id)
+public ResponseEntity<EmployeeResponse> deleteEmployee(@PathVariable("id") String id)
 {
 return employeeService.deleteEmployee(id);
 }
